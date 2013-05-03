@@ -1,0 +1,30 @@
+*:
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+
+body:
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	background: #000;
+	color: #ddd;
+	font-family: sans-serif;
+
+a:
+	text-decoration: none;
+	color: #dde;
+
+form:
+	input:
+		background: #fff;
+		border: 1px solid #cdd;
+		padding: 5px 10px;
+
+.clear:
+	clear: both;
+
+#wrapper:
+	width: 900px;
+	margin: 50px auto;
+	background: #111;

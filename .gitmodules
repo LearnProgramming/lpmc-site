@@ -1,0 +1,3 @@
+[submodule "cleancss.git"]
+	path = cleancss.git
+	url = git://github.com/raylu/py-cleancss.git

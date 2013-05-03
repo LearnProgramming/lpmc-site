@@ -1,0 +1,7 @@
+web:
+    port: 8888
+    host: 'localhost:8888'
+    cookie_secret: 'dis is super sekrit'
+    debug: true
+
+# vim: set et ft=yaml:
