@@ -2,6 +2,8 @@ web:
     port: 8888
     host: 'localhost:8888'
     cookie_secret: 'dis is super sekrit'
+    github_client_id: 'a1' # https://github.com/settings/applications
+    github_client_secret: 'abc123'
     debug: true
 
 # vim: set et ft=yaml:

@@ -9,6 +9,7 @@ import tornado.ioloop
 import tornado.web
 
 from config import web as config
+import github
 
 class BaseHandler(tornado.web.RequestHandler):
 	def render(self, *args, **kwargs):
@@ -23,6 +24,22 @@ class MainHandler(BaseHandler):
 	def get(self):
 		self.render('home.html')
 
+class LoginHandler(BaseHandler, github.GithubMixin):
+	@tornado.gen.coroutine
+	def get(self):
+		if self.get_argument('code', False):
+			user = yield self.get_authenticated_user(
+				redirect_uri=config.host + '/github_oauth',
+				code=self.get_argument('code'),
+			)
+			self.set_secure_cookie('access_token', user['access_token'])
+			self.redirect('/')
+		else:
+			self.authorize_redirect(
+				redirect_uri='http://lpmc/github_oauth',
+				scope=['user:email'],
+			)
+
 class CSSHandler(tornado.web.RequestHandler):
 	def get(self, css_path):
 		css_path = os.path.join(os.path.dirname(__file__), 'static', css_path) + '.ccss'
@@ -34,6 +51,7 @@ if __name__ == '__main__':
 	tornado.web.Application(
 		handlers=[
 			(r'/', MainHandler),
+			(r'/github_oauth', LoginHandler),
 			(r'/(css/.+)\.css', CSSHandler),
 		],
 		template_path=os.path.join(os.path.dirname(__file__), 'templates'),

@@ -14,6 +14,8 @@ class WebConfig(Config):
 		'port',
 		'host',
 		'cookie_secret',
+		'github_client_id',
+		'github_client_secret',
 		'debug',
 	])
 
