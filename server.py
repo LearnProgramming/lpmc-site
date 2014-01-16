@@ -36,7 +36,7 @@ class LoginHandler(BaseHandler, github.GithubMixin):
 			self.redirect('/')
 		else:
 			self.authorize_redirect(
-				redirect_uri='http://lpmc/github_oauth',
+				redirect_uri=config.host + '/github_oauth',
 				scope=['user:email'],
 			)
 
