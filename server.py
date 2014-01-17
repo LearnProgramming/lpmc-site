@@ -20,6 +20,11 @@ class BaseHandler(tornado.web.RequestHandler):
 		s = super(BaseHandler, self).render_string(*args, **kwargs)
 		return s.replace(b'\n', b'') # this is like Django's {% spaceless %}
 
+	def get_current_user(self):
+		user_id = self.get_secure_cookie('user_id')
+		if user_id is not None:
+			return user_id
+
 class MainHandler(BaseHandler):
 	def get(self):
 		self.render('home.html')
@@ -32,13 +37,18 @@ class LoginHandler(BaseHandler, github.GithubMixin):
 				redirect_uri=config.host + '/github_oauth',
 				code=self.get_argument('code'),
 			)
-			self.set_secure_cookie('access_token', user['access_token'])
+			self.set_secure_cookie('user_id', str(user['id']))
 			self.redirect('/')
 		else:
 			self.authorize_redirect(
 				redirect_uri=config.host + '/github_oauth',
 				scope=['user:email'],
 			)
+
+class LogoutHandler(BaseHandler):
+	def get(self):
+		self.clear_all_cookies()
+		self.redirect("/")
 
 class CSSHandler(tornado.web.RequestHandler):
 	def get(self, css_path):
@@ -52,6 +62,7 @@ if __name__ == '__main__':
 		handlers=[
 			(r'/', MainHandler),
 			(r'/github_oauth', LoginHandler),
+			(r'/logout', LogoutHandler),
 			(r'/(css/.+)\.css', CSSHandler),
 		],
 		template_path=os.path.join(os.path.dirname(__file__), 'templates'),

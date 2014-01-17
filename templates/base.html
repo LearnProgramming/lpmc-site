@@ -9,6 +9,11 @@
 		<div id="topbar">
 			<div id="title"></div>
 			<div id="nav">
+				{% if current_user %}
+				<a href="/logout">logout</a>
+				{% else %}
+				<a href="/github_oauth">login</a>
+				{% end %}
 			</div>
 		</div>
 

@@ -19,5 +19,12 @@ class WebConfig(Config):
 		'debug',
 	])
 
+class DBConfig(Config):
+    attrs = frozenset([
+        'user',
+        'database',
+    ])
+
 __doc = yaml.load(open('config.yaml', 'r'))
 web = WebConfig(__doc['web'])
+db = DBConfig(__doc['db'])
