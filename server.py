@@ -10,6 +10,7 @@ import tornado.web
 
 from config import web as config
 import github
+import db
 
 class BaseHandler(tornado.web.RequestHandler):
 	def render(self, *args, **kwargs):
@@ -29,7 +30,7 @@ class MainHandler(BaseHandler):
 	def get(self):
 		self.render('home.html')
 
-class LoginHandler(BaseHandler, github.GithubMixin):
+class LoginHandler(BaseHandler, github.GithubMixin, db.MomokoMixin):
 	@tornado.gen.coroutine
 	def get(self):
 		if self.get_argument('code', False):
@@ -38,6 +39,9 @@ class LoginHandler(BaseHandler, github.GithubMixin):
 				code=self.get_argument('code'),
 			)
 			self.set_secure_cookie('user_id', str(user['id']))
+			u = yield self.get_user(user['id'])
+			if not u:
+				self.create_user(user)
 			self.redirect('/')
 		else:
 			self.authorize_redirect(
