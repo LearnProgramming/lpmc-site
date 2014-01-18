@@ -17,9 +17,7 @@ class MomokoMixin:
 		yield self.execute(query, user['id'], user['login'], user['access_token'])
 
 	@tornado.gen.coroutine
-	def get_user(self, user_id):
-		query = 'SELECT * FROM USERS WHERE id = %s;'
-		cursor = yield self.execute(query, user_id)
-		result = cursor.fetchone()
-		if result:
-			raise tornado.gen.Return(value=result)
+	def get_user(self, github_id):
+		query = 'SELECT * FROM USERS WHERE github_id = %s;'
+		cursor = yield self.execute(query, github_id)
+		return cursor.fetchone()

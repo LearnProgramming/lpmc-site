@@ -22,9 +22,9 @@ class BaseHandler(tornado.web.RequestHandler):
 		return s.replace(b'\n', b'') # this is like Django's {% spaceless %}
 
 	def get_current_user(self):
-		user_id = self.get_secure_cookie('user_id')
-		if user_id is not None:
-			return user_id
+		github_id = self.get_secure_cookie('github_id')
+		if github_id is not None:
+			return int(github_id)
 
 class MainHandler(BaseHandler):
 	def get(self):
@@ -41,7 +41,7 @@ class LoginHandler(BaseHandler, github.GithubMixin, db.MomokoMixin):
 			user = yield self.get_user(github_user['id'])
 			if not user:
 				yield self.create_user(github_user)
-			self.set_secure_cookie('user_id', str(github_user['id']))
+			self.set_secure_cookie('github_id', str(github_user['id']))
 			self.redirect('/')
 		else:
 			self.authorize_redirect(
