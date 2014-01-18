@@ -6,4 +6,8 @@ web:
     github_client_secret: 'abc123'
     debug: true
 
+db:
+    user: 'lpmc'
+    database: 'lpmc'
+
 # vim: set et ft=yaml:

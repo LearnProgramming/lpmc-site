@@ -1,2 +1,3 @@
 PyYAML==3.10
 tornado==3.2
+momoko==1.0.0
