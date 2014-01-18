@@ -1,9 +1,9 @@
 import config
 
 import tornado.auth
-import tornado.concurrent
-import tornado.httpclient
 import tornado.escape
+import tornado.gen
+import tornado.httpclient
 import tornado.httputil
 
 class GithubMixin(tornado.auth.OAuth2Mixin):
@@ -14,52 +14,39 @@ class GithubMixin(tornado.auth.OAuth2Mixin):
 		kwargs['client_id'] = config.web.github_client_id
 		super(GithubMixin, self).authorize_redirect(**kwargs)
 
-	@tornado.concurrent.return_future
-	def get_authenticated_user(self, redirect_uri, code, callback=None):
+	@tornado.gen.coroutine
+	def get_authenticated_user(self, redirect_uri, code):
 		url = self._oauth_request_token_url(
 			redirect_uri=redirect_uri,
 			code=code,
 			client_id=config.web.github_client_id,
 			client_secret=config.web.github_client_secret,
 		)
-		self._http(
-			url,
-			self.async_callback(self._on_access_token, redirect_uri, callback)
-		)
-
-	def _on_access_token(self, redirect_uri, callback, response):
-		if response.error:
-			raise Exception(response.error)
+		response = yield self._http(url)
 		data = tornado.escape.json_decode(response.body)
 		access_token = data['access_token']
-		self.github_request(
-			'/user',
-			callback=self.async_callback(self._on_get_user_info, callback, access_token),
-			access_token=access_token,
-		)
 
-	def _on_get_user_info(self, callback, access_token, user):
+		user = yield self.github_request('/user', access_token)
 		user['access_token'] = access_token
-		callback(user)
+		return user
 
-	def github_request(self, path, callback, access_token=None, method='GET', body=None, **args):
+	@tornado.gen.coroutine
+	def github_request(self, path, access_token=None, method='GET', body=None, **args):
 		args['access_token'] = access_token
 		url = tornado.httputil.url_concat('https://api.github.com' + path, args)
 		if body is not None:
 			body = tornado.escape.json_encode(body)
-		self._http(url, callback=self.async_callback(self._parse_response, callback),
-				method=method, body=body)
-
-	def _parse_response(self, callback, response):
-		if response.error:
-			raise Exception('%s\n%s' % (response.error, response.body))
-		data = tornado.escape.json_decode(response.body)
-		callback(data)
+		response = yield self._http(url, method=method, body=body)
+		return tornado.escape.json_decode(response.body)
 
 	@staticmethod
+	@tornado.gen.coroutine
 	def _http(*args, **kwargs):
 		kwargs['headers'] = {
 			'Accept': 'application/json',
 			'User-Agent': 'raylu', # http://developer.github.com/v3/#user-agent-required
 		}
-		tornado.httpclient.AsyncHTTPClient().fetch(*args, **kwargs)
+		response = yield tornado.httpclient.AsyncHTTPClient().fetch(*args, **kwargs)
+		if response.error:
+			raise Exception('%s\n%s' % (response.error, response.body))
+		return response
