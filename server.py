@@ -34,14 +34,14 @@ class LoginHandler(BaseHandler, github.GithubMixin, db.MomokoMixin):
 	@tornado.gen.coroutine
 	def get(self):
 		if self.get_argument('code', False):
-			user = yield self.get_authenticated_user(
+			github_user = yield self.get_authenticated_user(
 				redirect_uri=config.host + '/github_oauth',
 				code=self.get_argument('code'),
 			)
-			self.set_secure_cookie('user_id', str(user['id']))
-			u = yield self.get_user(user['id'])
-			if not u:
-				self.create_user(user)
+			user = yield self.get_user(github_user['id'])
+			if not user:
+				yield self.create_user(github_user)
+			self.set_secure_cookie('user_id', str(github_user['id']))
 			self.redirect('/')
 		else:
 			self.authorize_redirect(
@@ -52,7 +52,7 @@ class LoginHandler(BaseHandler, github.GithubMixin, db.MomokoMixin):
 class LogoutHandler(BaseHandler):
 	def get(self):
 		self.clear_all_cookies()
-		self.redirect("/")
+		self.redirect('/')
 
 class CSSHandler(tornado.web.RequestHandler):
 	def get(self, css_path):
