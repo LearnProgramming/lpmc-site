@@ -26,11 +26,15 @@ class BaseHandler(tornado.web.RequestHandler):
 		if github_id is not None:
 			return int(github_id)
 
+	@property
+	def db(self):
+		return self.application.db
+
 class MainHandler(BaseHandler):
 	def get(self):
 		self.render('home.html')
 
-class LoginHandler(BaseHandler, github.GithubMixin, db.MomokoMixin):
+class LoginHandler(BaseHandler, github.GithubMixin):
 	@tornado.gen.coroutine
 	def get(self):
 		if self.get_argument('code', False):
@@ -38,9 +42,9 @@ class LoginHandler(BaseHandler, github.GithubMixin, db.MomokoMixin):
 				redirect_uri=config.host + '/github_oauth',
 				code=self.get_argument('code'),
 			)
-			user = yield self.get_user(github_user['id'])
+			user = yield self.db.get_user(github_user['id'])
 			if not user:
-				yield self.create_user(github_user)
+				yield self.db.create_user(github_user)
 			self.set_secure_cookie('github_id', str(github_user['id']))
 			self.redirect('/')
 		else:
@@ -62,7 +66,7 @@ class CSSHandler(tornado.web.RequestHandler):
 			self.write(cleancss.convert(f))
 
 if __name__ == '__main__':
-	tornado.web.Application(
+	app = tornado.web.Application(
 		handlers=[
 			(r'/', MainHandler),
 			(r'/github_oauth', LoginHandler),
@@ -73,6 +77,8 @@ if __name__ == '__main__':
 		static_path=os.path.join(os.path.dirname(__file__), 'static'),
 		cookie_secret=config.cookie_secret,
 		debug=config.debug,
-	).listen(config.port)
+	)
+	app.listen(config.port)
+	app.db = db.MomokoDB()
 	print('listening on :%d' % config.port)
 	tornado.ioloop.IOLoop.instance().start()

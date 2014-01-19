@@ -1,8 +1,15 @@
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS mentorships;
 
 CREATE TABLE users (
-	id serial PRIMARY KEY,
-	github_id integer NOT NULL UNIQUE,
+	github_id integer PRIMARY KEY,
 	username varchar(32) NOT NULL UNIQUE,
-	access_token varchar NOT NULL UNIQUE
+	access_token varchar NOT NULL UNIQUE,
+	is_mentor integer
+);
+
+CREATE TABLE mentorships (
+	mentee_id integer NOT NULL,
+	mentor_id integer NOT NULL,
+	constraint mentorships_unique unique(mentee_id,mentor_id)
 );

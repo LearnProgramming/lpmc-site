@@ -3,7 +3,7 @@ import momoko
 
 import config
 
-class MomokoMixin:
+class MomokoDB:
 	db = momoko.Pool(dsn='dbname=%s user=%s' % (config.db.database, config.db.user), size=2)
 
 	@tornado.gen.coroutine
@@ -13,8 +13,8 @@ class MomokoMixin:
 
 	@tornado.gen.coroutine
 	def create_user(self, user):
-		query = 'INSERT INTO users(github_id, username, access_token) VALUES (%s, %s, %s)'
-		yield self.execute(query, user['id'], user['login'], user['access_token'])
+		query = 'INSERT INTO users(github_id, username, access_token, is_mentor) VALUES (%s, %s, %s, %s)'
+		yield self.execute(query, user['id'], user['login'], user['access_token'], 0)
 
 	@tornado.gen.coroutine
 	def get_user(self, github_id):
