@@ -5,7 +5,7 @@
 	<ul id="mentees">
 		{% for mentee in mentees %}
 			<li>
-				<a href="/users/{{ mentee['username'] }}" target="_blank">{{ mentee['username'] }}</a>
+				<a href="/users/{{ mentee['github_id'] }}">{{ mentee['username'] }}</a>
 			</li>
 		{% end %}
 	</ul>

@@ -63,6 +63,12 @@ class LogoutHandler(BaseHandler):
 		self.clear_all_cookies()
 		self.redirect('/')
 
+class ProfileHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self, github_id):
+		user = yield self.db.get_user(github_id)
+		self.render('profile.html', user=user)
+
 class MenteeListHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self):
@@ -82,6 +88,7 @@ if __name__ == '__main__':
 			(r'/', MainHandler),
 			(r'/github_oauth', LoginHandler),
 			(r'/logout', LogoutHandler),
+			(r'/users/([0-9]+)', ProfileHandler),
 			(r'/mentees', MenteeListHandler),
 			(r'/(css/.+)\.css', CSSHandler),
 		],
