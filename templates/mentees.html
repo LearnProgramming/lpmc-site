@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<h2>Available Mentees</h2>
+	<ul id="mentees">
+		{% for mentee in mentees %}
+			<li>
+				<a href="/users/{{ mentee['username'] }}" target="_blank">{{ mentee['username'] }}</a>
+			</li>
+		{% end %}
+	</ul>
+{% end %}

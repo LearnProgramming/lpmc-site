@@ -1,4 +1,5 @@
 import tornado.gen
+import psycopg2
 import momoko
 
 import config
@@ -8,7 +9,7 @@ class MomokoDB:
 
 	@tornado.gen.coroutine
 	def execute(self, query, *args):
-		result = yield momoko.Op(self.db.execute, query, args)
+		result = yield momoko.Op(self.db.execute, query, args, cursor_factory=psycopg2.extras.DictCursor)
 		return result
 
 	@tornado.gen.coroutine
@@ -24,6 +25,12 @@ class MomokoDB:
 
 	@tornado.gen.coroutine
 	def get_user(self, github_id):
-		query = 'SELECT * FROM USERS WHERE github_id = %s;'
+		query = 'SELECT * FROM users WHERE github_id = %s;'
 		cursor = yield self.execute(query, github_id)
 		return cursor.fetchone()
+
+	@tornado.gen.coroutine
+	def get_unmatched_mentees(self):
+		query = 'SELECT * FROM users LEFT OUTER JOIN mentorships ON (users.github_id = mentorships.mentee_id) WHERE mentorships.mentee_id IS Null;'
+		cursor = yield self.execute(query)
+		return cursor.fetchall()

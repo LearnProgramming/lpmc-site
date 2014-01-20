@@ -58,6 +58,12 @@ class LogoutHandler(BaseHandler):
 		self.clear_all_cookies()
 		self.redirect('/')
 
+class MenteeListHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self):
+		mentees = yield self.db.get_unmatched_mentees()
+		self.render('mentees.html', mentees=mentees)
+
 class CSSHandler(tornado.web.RequestHandler):
 	def get(self, css_path):
 		css_path = os.path.join(os.path.dirname(__file__), 'static', css_path) + '.ccss'
@@ -71,6 +77,7 @@ if __name__ == '__main__':
 			(r'/', MainHandler),
 			(r'/github_oauth', LoginHandler),
 			(r'/logout', LogoutHandler),
+			(r'/mentees', MenteeListHandler),
 			(r'/(css/.+)\.css', CSSHandler),
 		],
 		template_path=os.path.join(os.path.dirname(__file__), 'templates'),
