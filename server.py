@@ -42,8 +42,8 @@ class LoginHandler(BaseHandler, github.GithubMixin):
 				redirect_uri=config.host + '/github_oauth',
 				code=self.get_argument('code'),
 			)
-			user = yield self.db.get_user(github_user['id'])
-			if not user:
+			exists = yield self.db.update_access_token(github_user)
+			if not exists:
 				yield self.db.create_user(github_user)
 			self.set_secure_cookie('github_id', str(github_user['id']))
 			self.redirect('/')

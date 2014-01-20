@@ -17,6 +17,12 @@ class MomokoDB:
 		yield self.execute(query, user['id'], user['login'], user['access_token'], 0)
 
 	@tornado.gen.coroutine
+	def update_access_token(self, user):
+		query = 'UPDATE users SET access_token = %s WHERE github_id = %s'
+		cursor = yield self.execute(query, user['access_token'], user['id'])
+		return cursor.rowcount
+
+	@tornado.gen.coroutine
 	def get_user(self, github_id):
 		query = 'SELECT * FROM USERS WHERE github_id = %s;'
 		cursor = yield self.execute(query, github_id)
