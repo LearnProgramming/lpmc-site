@@ -2,6 +2,17 @@
 
 {% block main %}
 
-<h2>{{ user['username'] }}</h2>
+	<h2>{{ user['username'] }}</h2>
+
+	{% if not user['is_mentor'] %}
+		{% if mentor %}
+			<h3>Mentor: {{ mentor['username'] }}</h3>
+		{% elif current_user['is_mentor'] %}
+			<form method="POST">
+				<input type="hidden" name="github_id" value="{{ user['github_id'] }}">
+				<input type="submit" value="Claim {{ user['username'] }}">
+			</form>
+		{% end %}
+	{% end %}
 
 {% end %}

@@ -23,8 +23,15 @@ class BaseHandler(tornado.web.RequestHandler):
 
 	def get_current_user(self):
 		github_id = self.get_secure_cookie('github_id')
+		is_mentor = self.get_secure_cookie('is_mentor')
 		if github_id is not None:
-			return int(github_id)
+			return {'github_id': int(github_id), 'is_mentor': int(is_mentor)}
+
+	@tornado.gen.coroutine
+	def create_session(self, github_id):
+		user = yield self.db.get_user(github_id)
+		self.set_secure_cookie('github_id', str(user['github_id']))
+		self.set_secure_cookie('is_mentor', str(user['is_mentor']))
 
 	@property
 	def db(self):
@@ -34,9 +41,9 @@ class MainHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self):
 		contact_info = None
-		github_id = self.get_current_user()
-		if github_id is not None:
-			contact_info = yield self.db.get_contact_info(github_id)
+		current_user = self.get_current_user()
+		if current_user is not None:
+			contact_info = yield self.db.get_contact_info(current_user['github_id'])
 		self.render('home.html', contact_info=contact_info)
 
 class LoginHandler(BaseHandler, github.GithubMixin):
@@ -50,7 +57,7 @@ class LoginHandler(BaseHandler, github.GithubMixin):
 			exists = yield self.db.update_access_token(github_user)
 			if not exists:
 				yield self.db.create_user(github_user)
-			self.set_secure_cookie('github_id', str(github_user['id']))
+			yield self.create_session(github_user['id'])
 			self.redirect('/')
 		else:
 			self.authorize_redirect(
@@ -67,7 +74,18 @@ class ProfileHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, github_id):
 		user = yield self.db.get_user(github_id)
-		self.render('profile.html', user=user)
+		mentor = yield self.db.get_mentor(github_id)
+		self.render('profile.html', user=user, mentor=mentor)
+
+	@tornado.gen.coroutine
+	def post(self, github_id):
+		current_user = self.get_current_user()
+		if current_user:
+			mentee = yield self.db.get_user(github_id)
+			mentor = yield self.db.get_user(current_user['github_id'])
+			if mentor and mentee:
+				yield self.db.create_mentorship(mentee, mentor)
+		self.redirect('/mentees')
 
 class MenteeListHandler(BaseHandler):
 	@tornado.gen.coroutine
