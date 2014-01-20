@@ -9,7 +9,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE mentorships (
-	mentee_id integer NOT NULL,
-	mentor_id integer NOT NULL,
-	constraint mentorships_unique unique(mentee_id,mentor_id)
+	mentee_id integer NOT NULL references users(github_id),
+	mentor_id integer NOT NULL references users(github_id),
+	constraint mentorships_unique unique(mentee_id, mentor_id)
 );
