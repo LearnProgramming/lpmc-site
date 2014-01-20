@@ -31,8 +31,13 @@ class BaseHandler(tornado.web.RequestHandler):
 		return self.application.db
 
 class MainHandler(BaseHandler):
+	@tornado.gen.coroutine
 	def get(self):
-		self.render('home.html')
+		contact_info = None
+		github_id = self.get_current_user()
+		if github_id is not None:
+			contact_info = yield self.db.get_contact_info(github_id)
+		self.render('home.html', contact_info=contact_info)
 
 class LoginHandler(BaseHandler, github.GithubMixin):
 	@tornado.gen.coroutine

@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS contact_info;
 DROP TABLE IF EXISTS mentorships;
 
 CREATE TABLE users (
@@ -6,6 +7,12 @@ CREATE TABLE users (
 	username varchar(32) NOT NULL UNIQUE,
 	access_token varchar NOT NULL UNIQUE,
 	is_mentor integer
+);
+
+CREATE TABLE contact_info (
+	github_id integer NOT NULL references users(github_id),
+	type smallint NOT NULL,
+	info varchar(32) NOT NULL
 );
 
 CREATE TABLE mentorships (

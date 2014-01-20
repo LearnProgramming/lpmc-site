@@ -4,4 +4,10 @@
 
 hi!
 
+{% if current_user and not contact_info %}
+	<p>
+		You haven't set up any contact info yet!
+	</p>
+{% end %}
+
 {% end %}
