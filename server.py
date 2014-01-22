@@ -24,14 +24,16 @@ class BaseHandler(tornado.web.RequestHandler):
 	def get_current_user(self):
 		github_id = self.get_secure_cookie('github_id')
 		is_mentor = self.get_secure_cookie('is_mentor')
+		username = self.get_secure_cookie('username')
 		if github_id is not None:
-			return {'github_id': int(github_id), 'is_mentor': int(is_mentor)}
+			return {'github_id': int(github_id), 'username': username, 'is_mentor': int(is_mentor)}
 
 	@tornado.gen.coroutine
 	def create_session(self, github_id):
 		user = yield self.db.get_user(github_id)
 		self.set_secure_cookie('github_id', str(user['github_id']))
 		self.set_secure_cookie('is_mentor', str(user['is_mentor']))
+		self.set_secure_cookie('username', str(user['username']))
 
 	@property
 	def db(self):
@@ -72,10 +74,13 @@ class LogoutHandler(BaseHandler):
 
 class ProfileHandler(BaseHandler):
 	@tornado.gen.coroutine
-	def get(self, github_id):
-		user = yield self.db.get_user(github_id)
-		mentor = yield self.db.get_mentor(github_id)
-		self.render('profile.html', user=user, mentor=mentor)
+	def get(self, username):
+		user = yield self.db.get_user_by('username', username)
+		mentor = yield self.db.get_mentor(user['github_id'])
+		mentees = []
+		if user['is_mentor']:
+			mentees = yield self.db.get_mentees(user)
+		self.render('profile.html', user=user, mentor=mentor, mentees=mentees)
 
 	@tornado.gen.coroutine
 	def post(self, github_id):
@@ -106,7 +111,7 @@ if __name__ == '__main__':
 			(r'/', MainHandler),
 			(r'/github_oauth', LoginHandler),
 			(r'/logout', LogoutHandler),
-			(r'/users/([0-9]+)', ProfileHandler),
+			(r'/users/(.*)', ProfileHandler),
 			(r'/mentees', MenteeListHandler),
 			(r'/(css/.+)\.css', CSSHandler),
 		],

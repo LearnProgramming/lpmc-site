@@ -37,6 +37,12 @@ class MomokoDB:
 		return cursor.fetchone()
 
 	@tornado.gen.coroutine
+	def get_user_by(self, field, value):
+		query = 'SELECT * FROM users WHERE ' + field + ' = %s;'
+		cursor = yield self.execute(query, value)
+		return cursor.fetchone()
+
+	@tornado.gen.coroutine
 	def get_contact_info(self, github_id):
 		query = 'SELECT type, info FROM contact_info WHERE github_id = %s;'
 		cursor = yield self.execute(query, github_id)
@@ -53,3 +59,9 @@ class MomokoDB:
 		query = 'SELECT * FROM users INNER JOIN mentorships ON users.github_id = mentorships.mentor_id WHERE mentorships.mentee_id = %s;'
 		cursor = yield self.execute(query, github_id)
 		return cursor.fetchone()
+
+	@tornado.gen.coroutine
+	def get_mentees(self, mentor):
+		query = 'SELECT * FROM users INNER JOIN mentorships ON users.github_id = mentorships.mentee_id WHERE mentorships.mentor_id = %s;'
+		cursor = yield self.execute(query, mentor['github_id'])
+		return cursor.fetchall()

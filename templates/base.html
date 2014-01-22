@@ -10,7 +10,10 @@
 			<div id="title"></div>
 			<div id="nav">
 				{% if current_user %}
-					<a href="/users/{{ current_user['github_id'] }}">profile</a>
+					{% if current_user['is_mentor'] %}
+						<a href="/mentees">Find Mentees</a>
+					{% end %}
+					<a href="/users/{{ current_user['username'] }}">profile</a>
 					<a href="/logout">logout</a>
 				{% else %}
 					<a href="/github_oauth">login</a>
