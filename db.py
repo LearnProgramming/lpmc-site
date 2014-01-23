@@ -31,6 +31,15 @@ class MomokoDB:
 		return cursor.rowcount
 
 	@tornado.gen.coroutine
+	def set_contact_info(self, github_id, info_type, info):
+		try:
+			query = 'INSERT INTO contact_info (github_id, type, info) VALUES(%s, %s, %s);'
+			yield self.execute(query, github_id, info_type, info)
+		except psycopg2.IntegrityError:
+			query = 'UPDATE contact_info SET info = %s WHERE github_id = %s AND type = %s;'
+			yield self.execute(query, info, github_id, info_type)
+
+	@tornado.gen.coroutine
 	def get_user(self, github_id):
 		query = 'SELECT github_id, username, access_token, is_mentor FROM users WHERE github_id = %s;'
 		cursor = yield self.execute(query, github_id)
@@ -77,3 +86,7 @@ class MomokoDB:
 		'''
 		cursor = yield self.execute(query, mentor['github_id'])
 		return cursor.fetchall()
+
+class ContactInfoType:
+	EMAIL = 0
+	IRC = 1

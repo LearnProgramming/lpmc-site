@@ -31,21 +31,23 @@ class GithubMixin(tornado.auth.OAuth2Mixin):
 		return user
 
 	@tornado.gen.coroutine
-	def github_request(self, path, access_token=None, method='GET', body=None, **args):
+	def github_request(self, path, access_token=None, method='GET', headers={}, body=None, **args):
 		args['access_token'] = access_token
 		url = tornado.httputil.url_concat('https://api.github.com' + path, args)
 		if body is not None:
 			body = tornado.escape.json_encode(body)
-		response = yield self._http(url, method=method, body=body)
+		response = yield self._http(url, method=method, headers=headers, body=body)
 		return tornado.escape.json_decode(response.body)
 
 	@staticmethod
 	@tornado.gen.coroutine
 	def _http(*args, **kwargs):
-		kwargs['headers'] = {
+		headers = {
 			'Accept': 'application/json',
 			'User-Agent': 'raylu', # http://developer.github.com/v3/#user-agent-required
 		}
+		headers.update(kwargs.get('headers', {}))
+		kwargs['headers'] = headers
 		response = yield tornado.httpclient.AsyncHTTPClient().fetch(*args, **kwargs)
 		if response.error:
 			raise Exception('%s\n%s' % (response.error, response.body))

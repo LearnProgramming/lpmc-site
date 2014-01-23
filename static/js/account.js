@@ -9,9 +9,22 @@ window.addEvent('domready', function() {
 				response.each(function(email) {
 					var div = new Element('div');
 					div.appendText(email['email']);
+					div.addEvent('click', function() {
+						set_email(email['email']);
+					});
 					emails.grab(div, 'top');
 				});
 			},
 		}).get();
 	});
+
+	function set_email(email) {
+		new Request({
+			'url': '/account/contact_info',
+			'onSuccess': function(response) {
+				if (response)
+					location.reload();
+			},
+		}).post({'info_type': 0, 'info': email});
+	}
 });

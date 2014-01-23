@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block js %}
+	<script src="/static/js/account.js"></script>
+{% end %}
+
+{% block main %}
+
+	Account Settings
+
+	{% for ci in contact_info %}
+		{{ ci }}
+	{% end %}
+	<form id="emails">
+		<input type="button" value="Update emails" id="update_emails">
+	</form>
+
+{% end %}

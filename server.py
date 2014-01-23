@@ -4,6 +4,7 @@ import os
 
 import cleancss
 import tornado.gen
+import tornado.escape
 import tornado.httpclient
 import tornado.ioloop
 import tornado.web
@@ -72,6 +73,21 @@ class LogoutHandler(BaseHandler):
 		self.clear_all_cookies()
 		self.redirect('/')
 
+class GithubEmailsHandler(BaseHandler, github.GithubMixin):
+	@tornado.web.authenticated
+	@tornado.gen.coroutine
+	def get(self):
+		user = yield self.db.get_user(self.current_user['github_id'])
+		emails = yield self.github_request('/user/emails', user['access_token'],
+				headers={'Accept': 'application/vnd.github.v3'})
+		rval = []
+		for email in emails:
+			if email['verified']:
+				del email['verified']
+				rval.append(email)
+		self.set_header('Content-Type', 'application/json')
+		self.write(tornado.escape.json_encode(rval))
+
 class ProfileHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, username):
@@ -100,6 +116,24 @@ class MenteeListHandler(BaseHandler):
 		mentees = yield self.db.get_unmatched_mentees()
 		self.render('mentees.html', mentees=mentees)
 
+class AccountHandler(BaseHandler):
+	@tornado.web.authenticated
+	@tornado.gen.coroutine
+	def get(self):
+		contact_info = yield self.db.get_contact_info(self.current_user['github_id'])
+		self.render('account.html', contact_info=contact_info)
+
+class ContactInfoHandler(BaseHandler):
+	@tornado.web.authenticated
+	@tornado.gen.coroutine
+	def post(self):
+		info_type = int(self.get_argument('info_type'))
+		info = self.get_argument('info')
+		yield self.db.set_contact_info(self.current_user['github_id'], info_type, info)
+
+		self.set_header('Content-Type', 'application/json')
+		self.write('true')
+
 class CSSHandler(tornado.web.RequestHandler):
 	def get(self, css_path):
 		css_path = os.path.join(os.path.dirname(__file__), 'static', css_path) + '.ccss'
@@ -112,13 +146,17 @@ if __name__ == '__main__':
 		handlers=[
 			(r'/', MainHandler),
 			(r'/github_oauth', LoginHandler),
+			(r'/github_emails', GithubEmailsHandler),
 			(r'/logout', LogoutHandler),
 			(r'/users/(.*)', ProfileHandler),
 			(r'/mentees', MenteeListHandler),
+			(r'/account', AccountHandler),
+			(r'/account/contact_info', ContactInfoHandler),
 			(r'/(css/.+)\.css', CSSHandler),
 		],
 		template_path=os.path.join(os.path.dirname(__file__), 'templates'),
 		static_path=os.path.join(os.path.dirname(__file__), 'static'),
+		login_url='/github_oauth',
 		cookie_secret=config.cookie_secret,
 		debug=config.debug,
 	)

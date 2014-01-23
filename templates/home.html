@@ -2,12 +2,12 @@
 
 {% block main %}
 
-hi!
+	hi!
 
-{% if current_user and not contact_info %}
-	<p>
-		You haven't set up any contact info yet!
-	</p>
-{% end %}
+	{% if current_user and not contact_info %}
+		<p>
+			You haven't set up any contact info yet! Go to your <a href="/account">account settings</a> to set it up.
+		</p>
+	{% end %}
 
 {% end %}
