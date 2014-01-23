@@ -8,7 +8,7 @@
 		{% if mentor %}
 			<h3>Mentor: <a href="{{ mentor['username'] }}">{{ mentor['username'] }}</a></h3>
 		{% elif current_user['is_mentor'] %}
-			<form method="POST">
+			<form method="post">
 				<input type="hidden" name="github_id" value="{{ user['github_id'] }}">
 				<input type="submit" value="Claim {{ user['username'] }}">
 			</form>

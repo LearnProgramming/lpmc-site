@@ -23,9 +23,9 @@ class BaseHandler(tornado.web.RequestHandler):
 
 	def get_current_user(self):
 		github_id = self.get_secure_cookie('github_id')
-		is_mentor = self.get_secure_cookie('is_mentor')
-		username = self.get_secure_cookie('username')
 		if github_id is not None:
+			is_mentor = self.get_secure_cookie('is_mentor')
+			username = self.get_secure_cookie('username')
 			return {'github_id': int(github_id), 'username': username, 'is_mentor': int(is_mentor)}
 
 	@tornado.gen.coroutine
@@ -76,17 +76,19 @@ class ProfileHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, username):
 		user = yield self.db.get_user_by('username', username)
-		mentor = yield self.db.get_mentor(user['github_id'])
+		mentor = None
 		mentees = []
 		if user['is_mentor']:
 			mentees = yield self.db.get_mentees(user)
+		else:
+			mentor = yield self.db.get_mentor(user['github_id'])
 		self.render('profile.html', user=user, mentor=mentor, mentees=mentees)
 
 	@tornado.gen.coroutine
-	def post(self, github_id):
+	def post(self, username):
 		current_user = self.get_current_user()
 		if current_user:
-			mentee = yield self.db.get_user(github_id)
+			mentee = yield self.db.get_user_by('username', username)
 			mentor = yield self.db.get_user(current_user['github_id'])
 			if mentor and mentee:
 				yield self.db.create_mentorship(mentee, mentor)
