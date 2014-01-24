@@ -95,23 +95,24 @@ class ProfileHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, username):
 		user = yield self.db.get_user_by('username', username)
-		mentor = None
+		mentor = questions = answers = None
 		mentees = []
 		if user['is_mentor']:
 			mentees = yield self.db.get_mentees(user)
 		else:
 			mentor = yield self.db.get_mentor(user['github_id'])
-		self.render('profile.html', user=user, mentor=mentor, mentees=mentees)
+			questions, answers = yield self.db.get_questionnaire(user['github_id'])
+		self.render('profile.html', user=user, mentor=mentor, mentees=mentees, questions=questions, answers=answers)
 
+	@tornado.web.authenticated
 	@tornado.gen.coroutine
 	def post(self, username):
-		current_user = self.get_current_user()
-		if current_user:
-			mentee = yield self.db.get_user_by('username', username)
-			mentor = yield self.db.get_user(current_user['github_id'])
-			if mentor and mentee:
-				yield self.db.create_mentorship(mentee, mentor)
-		self.redirect('/mentees')
+		if not self.current_user['is_mentor']:
+			raise tornado.web.HTTPError(403)
+		mentee = yield self.db.get_user_by('username', username)
+		mentor = yield self.db.get_user(self.current_user['github_id'])
+		yield self.db.create_mentorship(mentee, mentor)
+		self.redirect('/users/' + username)
 
 class MenteeListHandler(BaseHandler):
 	@tornado.gen.coroutine
@@ -126,8 +127,6 @@ class AccountHandler(BaseHandler):
 		github_id = self.current_user['github_id']
 		contact_info = yield self.db.get_contact_info(github_id)
 		questions, answers = yield self.db.get_questionnaire(github_id)
-		if answers is None:
-			answers = [""] * 5
 		self.render('account.html', contact_info=contact_info, questions=questions, answers=answers)
 
 class ContactInfoHandler(BaseHandler):

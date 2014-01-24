@@ -79,7 +79,9 @@ class MomokoDB:
 			ORDER BY github_id DESC;
 		'''
 		cursor = yield self.execute(query, github_id)
-		return cursor.fetchone(), cursor.fetchone()
+		questions = cursor.fetchone()
+		answers = cursor.fetchone() or [""] * 5
+		return questions, answers
 
 	@tornado.gen.coroutine
 	def get_unmatched_mentees(self):
