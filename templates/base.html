@@ -4,6 +4,7 @@
 	<link rel="stylesheet" type="text/css" href="/css/base.css" />
 	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools.js"></script>
 	{% block js %}{% end %}
+	{% block css %}{% end %}
 </head>
 <body>
 	<div id="wrapper">
@@ -14,6 +15,7 @@
 					{% if current_user['is_mentor'] %}
 						<a href="/mentees">Find Mentees</a>
 					{% end %}
+					<a href="/account">account settings</a>
 					<a href="/users/{{ current_user['username'] }}">profile</a>
 					<a href="/logout">logout</a>
 				{% else %}

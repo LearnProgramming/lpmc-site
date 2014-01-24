@@ -16,10 +16,11 @@ a:
 	color: #3ae
 
 form:
-	input:
-		background: #fff
+	input, textarea:
+		background: #222
 		border: 1px solid #cdd
 		padding: 5px 10px
+		color: #ddd
 
 .clear:
 	clear: both

@@ -58,10 +58,13 @@ class LoginHandler(BaseHandler, github.GithubMixin):
 				code=self.get_argument('code'),
 			)
 			exists = yield self.db.update_access_token(github_user)
-			if not exists:
+			if exists:
+				yield self.create_session(github_user['id'])
+				self.redirect('/')
+			else: # new user
 				yield self.db.create_user(github_user)
-			yield self.create_session(github_user['id'])
-			self.redirect('/')
+				yield self.create_session(github_user['id'])
+				self.redirect('/account')
 		else:
 			self.authorize_redirect(
 				redirect_uri=config.host + '/github_oauth',
@@ -120,8 +123,12 @@ class AccountHandler(BaseHandler):
 	@tornado.web.authenticated
 	@tornado.gen.coroutine
 	def get(self):
-		contact_info = yield self.db.get_contact_info(self.current_user['github_id'])
-		self.render('account.html', contact_info=contact_info)
+		github_id = self.current_user['github_id']
+		contact_info = yield self.db.get_contact_info(github_id)
+		questions, answers = yield self.db.get_questionnaire(github_id)
+		if answers is None:
+			answers = [""] * 5
+		self.render('account.html', contact_info=contact_info, questions=questions, answers=answers)
 
 class ContactInfoHandler(BaseHandler):
 	@tornado.web.authenticated
@@ -133,6 +140,16 @@ class ContactInfoHandler(BaseHandler):
 
 		self.set_header('Content-Type', 'application/json')
 		self.write('true')
+
+class QuestionnaireHandler(BaseHandler):
+	@tornado.web.authenticated
+	@tornado.gen.coroutine
+	def post(self):
+		answers = []
+		for i in range(1, 6):
+			answers.append(self.get_argument('q%d' % i, None))
+		yield self.db.update_questionnaire(self.current_user['github_id'], *answers)
+		self.redirect('/account')
 
 class CSSHandler(tornado.web.RequestHandler):
 	def get(self, css_path):
@@ -152,6 +169,7 @@ if __name__ == '__main__':
 			(r'/mentees', MenteeListHandler),
 			(r'/account', AccountHandler),
 			(r'/account/contact_info', ContactInfoHandler),
+			(r'/account/questionnaire', QuestionnaireHandler),
 			(r'/(css/.+)\.css', CSSHandler),
 		],
 		template_path=os.path.join(os.path.dirname(__file__), 'templates'),

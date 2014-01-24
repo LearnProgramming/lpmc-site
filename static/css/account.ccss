@@ -1,0 +1,6 @@
+textarea:
+	display: block
+	margin-top: 5px
+	width: 50%
+	height: 100px
+	font: inherit

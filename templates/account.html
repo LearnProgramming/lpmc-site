@@ -4,15 +4,34 @@
 	<script src="/static/js/account.js"></script>
 {% end %}
 
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="/css/account.css" />
+{% end %}
+
 {% block main %}
 
-	Account Settings
+	<h2>Account Settings</h2>
 
+	Contact info:
 	{% for ci in contact_info %}
 		{{ ci }}
 	{% end %}
 	<form id="emails">
 		<input type="button" value="Update emails" id="update_emails">
+	</form>
+
+	<h3>Mentee Questionnaire</h2>
+	<p>
+		(If you are looking to become a mentor, you don't need to fill this out. Find us in <code>#lpmc</code> on Freenode instead.)
+	</p>
+	<form action="/account/questionnaire" method="post">
+		{% for i, (q, a) in enumerate(zip(questions, answers)) %}
+			<p>
+				{{ q }}
+				<textarea name="q{{ i + 1 }}">{{ a }}</textarea>
+			</p>
+		{% end %}
+		<input type="submit" value="Save">
 	</form>
 
 {% end %}

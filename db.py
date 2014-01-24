@@ -40,6 +40,19 @@ class MomokoDB:
 			yield self.execute(query, info, github_id, info_type)
 
 	@tornado.gen.coroutine
+	def update_questionnaire(self, github_id, q1, q2, q3, q4, q5):
+		try:
+			query = 'INSERT INTO questionnaire (github_id, q1, q2, q3, q4, q5) VALUES(%s, %s, %s, %s, %s, %s);'
+			yield self.execute(query, github_id, q1, q2, q3, q4, q5)
+		except psycopg2.IntegrityError:
+			query = '''
+				UPDATE questionnaire
+				SET q1 = %s, q2 = %s, q3 = %s, q4 = %s, q5 = %s
+				WHERE github_id = %s;
+			'''
+			yield self.execute(query, q1, q2, q3, q4, q5, github_id)
+
+	@tornado.gen.coroutine
 	def get_user(self, github_id):
 		query = 'SELECT github_id, username, access_token, is_mentor FROM users WHERE github_id = %s;'
 		cursor = yield self.execute(query, github_id)
@@ -56,6 +69,17 @@ class MomokoDB:
 		query = 'SELECT type, info FROM contact_info WHERE github_id = %s;'
 		cursor = yield self.execute(query, github_id)
 		return cursor.fetchall()
+
+	@tornado.gen.coroutine
+	def get_questionnaire(self, github_id):
+		# DESC sorts NULL first
+		query = '''
+			SELECT q1, q2, q3, q4, q5 FROM questionnaire
+			WHERE github_id = %s OR github_id IS NULL
+			ORDER BY github_id DESC;
+		'''
+		cursor = yield self.execute(query, github_id)
+		return cursor.fetchone(), cursor.fetchone()
 
 	@tornado.gen.coroutine
 	def get_unmatched_mentees(self):
