@@ -84,11 +84,12 @@ class MomokoDB:
 		return questions, answers
 
 	@tornado.gen.coroutine
-	def get_unmatched_mentees(self):
+	def get_userlist(self):
 		query = '''
-			SELECT users.username FROM users
+			SELECT users.username, mentors.username FROM users
 			LEFT OUTER JOIN mentorships ON users.github_id = mentorships.mentee_id
-			WHERE mentorships.mentee_id IS NULL AND users.is_mentor=0;
+			LEFT OUTER JOIN users AS mentors ON mentorships.mentor_id = mentors.github_id
+			ORDER BY users.is_mentor DESC;
 		'''
 		cursor = yield self.execute(query)
 		return cursor.fetchall()

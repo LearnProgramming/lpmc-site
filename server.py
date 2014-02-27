@@ -71,11 +71,6 @@ class LoginHandler(BaseHandler, github.GithubMixin):
 				scope=['user:email'],
 			)
 
-class LogoutHandler(BaseHandler):
-	def get(self):
-		self.clear_all_cookies()
-		self.redirect('/')
-
 class GithubEmailsHandler(BaseHandler, github.GithubMixin):
 	@tornado.web.authenticated
 	@tornado.gen.coroutine
@@ -90,6 +85,17 @@ class GithubEmailsHandler(BaseHandler, github.GithubMixin):
 				rval.append(email)
 		self.set_header('Content-Type', 'application/json')
 		self.write(tornado.escape.json_encode(rval))
+
+class LogoutHandler(BaseHandler):
+	def get(self):
+		self.clear_all_cookies()
+		self.redirect('/')
+
+class UserListHandler(BaseHandler):
+	@tornado.gen.coroutine
+	def get(self):
+		users = yield self.db.get_userlist()
+		self.render('users.html', users=users)
 
 class ProfileHandler(BaseHandler):
 	@tornado.gen.coroutine
@@ -114,12 +120,6 @@ class ProfileHandler(BaseHandler):
 		mentor = yield self.db.get_user(self.current_user['github_id'])
 		yield self.db.create_mentorship(mentee, mentor)
 		self.redirect('/users/' + username)
-
-class MenteeListHandler(BaseHandler):
-	@tornado.gen.coroutine
-	def get(self):
-		mentees = yield self.db.get_unmatched_mentees()
-		self.render('mentees.html', mentees=mentees)
 
 class AccountHandler(BaseHandler):
 	@tornado.web.authenticated
@@ -165,8 +165,8 @@ if __name__ == '__main__':
 			(r'/github_oauth', LoginHandler),
 			(r'/github_emails', GithubEmailsHandler),
 			(r'/logout', LogoutHandler),
+			(r'/users', UserListHandler),
 			(r'/users/(.*)', ProfileHandler),
-			(r'/mentees', MenteeListHandler),
 			(r'/account', AccountHandler),
 			(r'/account/contact_info', ContactInfoHandler),
 			(r'/account/questionnaire', QuestionnaireHandler),

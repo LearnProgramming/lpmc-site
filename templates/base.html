@@ -11,10 +11,8 @@
 		<div id="topbar">
 			<div id="title"></div>
 			<div id="nav">
+				<a href="/users">users</a>
 				{% if current_user %}
-					{% if current_user['is_mentor'] %}
-						<a href="/mentees">Find Mentees</a>
-					{% end %}
 					<a href="/account">account settings</a>
 					<a href="/users/{{ current_user['username'] }}">profile</a>
 					<a href="/logout">logout</a>

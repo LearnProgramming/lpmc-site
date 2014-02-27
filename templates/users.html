@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block main %}
+	<h2>users</h2>
+	<ul>
+		{% for user in users %}
+			<li>
+				<a href="/users/{{ user[0] }}">{{ user[0] }}</a>
+				{% if user[1] is not None %}
+					&nbsp;(mentor: <a href="/users/{{ user[1] }}">{{ user[1] }}</a>)
+				{% end %}
+			</li>
+		{% end %}
+	</ul>
+{% end %}
