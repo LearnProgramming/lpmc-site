@@ -97,6 +97,28 @@ class UserListHandler(BaseHandler):
 		users = yield self.db.get_userlist()
 		self.render('users.html', users=users)
 
+class ClaimHandler(BaseHandler):
+	@tornado.web.authenticated
+	@tornado.gen.coroutine
+	def post(self, username):
+		if not self.current_user['is_mentor']:
+			raise tornado.web.HTTPError(403)
+		mentee = yield self.db.get_user_by('username', username)
+		if mentee['is_mentor']:
+			raise tornado.web.HTTPError(403)
+		yield self.db.create_mentorship(mentee['github_id'], self.current_user['github_id'])
+		self.redirect('/users/' + username)
+
+class UnclaimHandler(BaseHandler):
+	@tornado.web.authenticated
+	@tornado.gen.coroutine
+	def post(self, username):
+		if not self.current_user['is_mentor']:
+			raise tornado.web.HTTPError(403)
+		mentee = yield self.db.get_user_by('username', username)
+		yield self.db.remove_mentorship(mentee['github_id'], self.current_user['github_id'])
+		self.redirect('/users/' + username)
+
 class ProfileHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self, username):
@@ -110,16 +132,6 @@ class ProfileHandler(BaseHandler):
 			if self.current_user and self.current_user['is_mentor']:
 				questions, answers = yield self.db.get_questionnaire(user['github_id'])
 		self.render('profile.html', user=user, mentor=mentor, mentees=mentees, questions=questions, answers=answers)
-
-	@tornado.web.authenticated
-	@tornado.gen.coroutine
-	def post(self, username):
-		if not self.current_user['is_mentor']:
-			raise tornado.web.HTTPError(403)
-		mentee = yield self.db.get_user_by('username', username)
-		mentor = yield self.db.get_user(self.current_user['github_id'])
-		yield self.db.create_mentorship(mentee, mentor)
-		self.redirect('/users/' + username)
 
 class AccountHandler(BaseHandler):
 	@tornado.web.authenticated
@@ -166,6 +178,8 @@ if __name__ == '__main__':
 			(r'/github_emails', GithubEmailsHandler),
 			(r'/logout', LogoutHandler),
 			(r'/users', UserListHandler),
+			(r'/users/(.*)/claim', ClaimHandler),
+			(r'/users/(.*)/unclaim', UnclaimHandler),
 			(r'/users/(.*)', ProfileHandler),
 			(r'/account', AccountHandler),
 			(r'/account/contact_info', ContactInfoHandler),

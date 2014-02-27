@@ -12,8 +12,14 @@
 	{% else %}
 		{% if mentor %}
 			<h3>Mentor: <a href="{{ mentor['username'] }}">{{ mentor['username'] }}</a></h3>
+			{% if current_user and current_user['github_id'] == mentor['github_id'] %}
+				<form action="/users/{{ user['username'] }}/unclaim" method="post">
+					<input type="hidden" name="github_id" value="{{ user['github_id'] }}">
+					<input type="submit" value="Unclaim {{ user['username'] }}">
+				</form>
+			{% end %}
 		{% elif current_user['is_mentor'] %}
-			<form method="post">
+			<form action="/users/{{ user['username'] }}/claim" method="post">
 				<input type="hidden" name="github_id" value="{{ user['github_id'] }}">
 				<input type="submit" value="Claim {{ user['username'] }}">
 			</form>

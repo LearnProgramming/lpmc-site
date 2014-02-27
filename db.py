@@ -18,11 +18,14 @@ class MomokoDB:
 		yield self.execute(query, user['id'], user['login'], user['access_token'], 0)
 
 	@tornado.gen.coroutine
-	def create_mentorship(self, mentee, mentor):
-		mentee_claimed = yield self.get_mentor(mentee['github_id'])
-		if mentor['is_mentor'] and not mentee['is_mentor'] and not mentee_claimed:
-			query = 'INSERT INTO mentorships(mentee_id, mentor_id) VALUES (%s, %s);'
-			yield self.execute(query, mentee['github_id'], mentor['github_id'])
+	def create_mentorship(self, mentee_id, mentor_id):
+		query = 'INSERT INTO mentorships(mentee_id, mentor_id) VALUES (%s, %s);'
+		yield self.execute(query, mentee_id, mentor_id)
+
+	@tornado.gen.coroutine
+	def remove_mentorship(self, mentee_id, mentor_id):
+		query = 'DELETE FROM mentorships WHERE mentee_id = %s AND mentor_id = %s;'
+		yield self.execute(query, mentee_id, mentor_id)
 
 	@tornado.gen.coroutine
 	def update_access_token(self, user):
