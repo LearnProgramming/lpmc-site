@@ -101,7 +101,8 @@ class ProfileHandler(BaseHandler):
 			mentees = yield self.db.get_mentees(user)
 		else:
 			mentor = yield self.db.get_mentor(user['github_id'])
-			questions, answers = yield self.db.get_questionnaire(user['github_id'])
+			if self.current_user and self.current_user['is_mentor']:
+				questions, answers = yield self.db.get_questionnaire(user['github_id'])
 		self.render('profile.html', user=user, mentor=mentor, mentees=mentees, questions=questions, answers=answers)
 
 	@tornado.web.authenticated

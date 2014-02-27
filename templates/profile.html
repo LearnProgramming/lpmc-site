@@ -12,15 +12,17 @@
 	{% else %}
 		{% if mentor %}
 			<h3>Mentor: <a href="{{ mentor['username'] }}">{{ mentor['username'] }}</a></h3>
-			{% for q, a in zip(questions, answers) %}
-				<div>{{ q }}</div>
-				<div>{{ a }}</div>
-			{% end %}
 		{% elif current_user['is_mentor'] %}
 			<form method="post">
 				<input type="hidden" name="github_id" value="{{ user['github_id'] }}">
 				<input type="submit" value="Claim {{ user['username'] }}">
 			</form>
+		{% end %}
+		{% if answers %}
+			{% for q, a in zip(questions, answers) %}
+				<div>{{ q }}</div>
+				<div>{{ a }}</div>
+			{% end %}
 		{% end %}
 	{% end %}
 
