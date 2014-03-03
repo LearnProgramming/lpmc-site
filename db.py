@@ -68,10 +68,15 @@ class MomokoDB:
 		return cursor.fetchone()
 
 	@tornado.gen.coroutine
-	def get_contact_info(self, github_id):
-		query = 'SELECT type, info FROM contact_info WHERE github_id = %s;'
-		cursor = yield self.execute(query, github_id)
-		return cursor.fetchall()
+	def get_contact_info(self, github_id, info_type=None):
+		if info_type is None:
+			query = 'SELECT type, info FROM contact_info WHERE github_id = %s;'
+			cursor = yield self.execute(query, github_id)
+			return cursor.fetchall()
+		else:
+			query = 'SELECT info FROM contact_info WHERE github_id = %s AND type = %s;'
+			cursor = yield self.execute(query, github_id, info_type)
+			return cursor.fetchone()[0]
 
 	@tornado.gen.coroutine
 	def get_questionnaire(self, github_id):

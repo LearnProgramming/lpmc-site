@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import urllib.parse
 
 import cleancss
 import tornado.gen
@@ -97,6 +98,32 @@ class UserListHandler(BaseHandler):
 		users = yield self.db.get_userlist()
 		self.render('users.html', users=users)
 
+class MailHandler(BaseHandler):
+	@tornado.web.authenticated
+	@tornado.gen.coroutine
+	def post(self, username):
+		from_user = self.current_user
+		from_email = yield self.db.get_contact_info(from_user['github_id'], db.ContactInfoType.EMAIL)
+		from_username = from_user['username'].decode('utf-8')
+		to_user = yield self.db.get_user_by('username', username)
+		to_email = yield self.db.get_contact_info(to_user['github_id'], db.ContactInfoType.EMAIL)
+		data = {
+			'from': '%s <%s>' % (from_username, from_email),
+			'to': '%s <%s>' % (username, to_email),
+			'subject': 'lpmc message from %s' % from_username,
+			'text': self.get_body_argument('body'),
+		}
+		request = tornado.httpclient.HTTPRequest(
+			method='POST',
+			url='https://api.mailgun.net/v2/lpmc.io/messages',
+			auth_username='api',
+			auth_password=config.mailgun_api_key,
+			body=urllib.parse.urlencode(data),
+		)
+		response = yield tornado.httpclient.AsyncHTTPClient().fetch(request)
+		data = tornado.escape.json_decode(response.body)
+		self.render('mail.html', username=username, message=data['message'])
+
 class ClaimHandler(BaseHandler):
 	@tornado.web.authenticated
 	@tornado.gen.coroutine
@@ -178,6 +205,7 @@ if __name__ == '__main__':
 			(r'/github_emails', GithubEmailsHandler),
 			(r'/logout', LogoutHandler),
 			(r'/users', UserListHandler),
+			(r'/users/(.*)/mail', MailHandler),
 			(r'/users/(.*)/claim', ClaimHandler),
 			(r'/users/(.*)/unclaim', UnclaimHandler),
 			(r'/users/(.*)', ProfileHandler),

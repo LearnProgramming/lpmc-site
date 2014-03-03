@@ -16,6 +16,7 @@ class WebConfig(Config):
 		'cookie_secret',
 		'github_client_id',
 		'github_client_secret',
+		'mailgun_api_key',
 		'debug',
 	])
 

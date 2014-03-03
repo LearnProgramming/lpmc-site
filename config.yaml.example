@@ -4,6 +4,7 @@ web:
     cookie_secret: 'dis is super sekrit'
     github_client_id: 'a1' # https://github.com/settings/applications
     github_client_secret: 'abc123'
+    mailgun_api_key: null
     debug: true
 
 db:
