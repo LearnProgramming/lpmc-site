@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+	Are you sure?
+	<form action="/account/delete" method="post">
+		<input type="submit" value="Yes, I'm sure.">
+	</form>
+	<a href="/account">No, I changed my mind.</a>
+
+{% end %}

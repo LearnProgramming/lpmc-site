@@ -122,6 +122,17 @@ class MomokoDB:
 		cursor = yield self.execute(query, mentor['github_id'])
 		return cursor.fetchall()
 
+	@tornado.gen.coroutine
+	def delete_user(self, github_id):
+		query = 'DELETE FROM mentorships WHERE mentor_id = %s OR mentee_id = %s;'
+		yield self.execute(query, github_id, github_id)
+		query = 'DELETE FROM contact_info WHERE github_id = %s;'
+		yield self.execute(query, github_id)
+		query = 'DELETE FROM questionnaire WHERE github_id = %s;'
+		yield self.execute(query, github_id)
+		query = 'DELETE FROM users WHERE github_id = %s;'
+		yield self.execute(query, github_id)
+
 class ContactInfoType:
 	EMAIL = 0
 	IRC = 1

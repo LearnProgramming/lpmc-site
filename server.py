@@ -190,6 +190,17 @@ class QuestionnaireHandler(BaseHandler):
 		yield self.db.update_questionnaire(self.current_user['github_id'], *answers)
 		self.redirect('/account')
 
+class DeleteAccountHandler(BaseHandler):
+	@tornado.web.authenticated
+	def get(self):
+		self.render('delete_account.html')
+
+	@tornado.web.authenticated
+	@tornado.gen.coroutine
+	def post(self):
+		yield self.db.delete_user(self.current_user['github_id'])
+		self.redirect('/logout')
+
 class CSSHandler(tornado.web.RequestHandler):
 	def get(self, css_path):
 		css_path = os.path.join(os.path.dirname(__file__), 'static', css_path) + '.ccss'
@@ -212,6 +223,7 @@ if __name__ == '__main__':
 			(r'/account', AccountHandler),
 			(r'/account/contact_info', ContactInfoHandler),
 			(r'/account/questionnaire', QuestionnaireHandler),
+			(r'/account/delete', DeleteAccountHandler),
 			(r'/(css/.+)\.css', CSSHandler),
 		],
 		template_path=os.path.join(os.path.dirname(__file__), 'templates'),
