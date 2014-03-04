@@ -44,11 +44,7 @@ class BaseHandler(tornado.web.RequestHandler):
 class MainHandler(BaseHandler):
 	@tornado.gen.coroutine
 	def get(self):
-		contact_info = None
-		current_user = self.get_current_user()
-		if current_user is not None:
-			contact_info = yield self.db.get_contact_info(current_user['github_id'])
-		self.render('home.html', contact_info=contact_info)
+		self.render('home.html')
 
 class LoginHandler(BaseHandler, github.GithubMixin):
 	@tornado.gen.coroutine
@@ -64,6 +60,12 @@ class LoginHandler(BaseHandler, github.GithubMixin):
 				self.redirect('/')
 			else: # new user
 				yield self.db.create_user(github_user)
+				emails = yield self.github_request('/user/emails', github_user['access_token'],
+						headers={'Accept': 'application/vnd.github.v3'})
+				for email in emails:
+					if email['verified']:
+						break
+				yield self.db.set_contact_info(github_user['id'], db.ContactInfoType.EMAIL, email['email'])
 				yield self.create_session(github_user['id'])
 				self.redirect('/account')
 		else:
