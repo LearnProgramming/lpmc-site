@@ -9,7 +9,7 @@
 <body>
 	<div id="wrapper">
 		<div id="topbar">
-			<div id="title"></div>
+			<div id="title"><a href="/">LPMC</a></div>
 			<div id="nav">
 				<a href="/users">users</a>
 				{% if current_user %}
@@ -22,7 +22,7 @@
 			</div>
 		</div>
 
-		{% block main %}{% end %}
+		<div id="content">{% block main %}{% end %}</div>
 	</div>
 </body>
 </html>
