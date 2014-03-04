@@ -18,7 +18,7 @@
 					<input type="submit" value="Unclaim {{ user['username'] }}">
 				</form>
 			{% end %}
-		{% elif current_user['is_mentor'] %}
+		{% elif current_user and current_user['is_mentor'] %}
 			<form action="/users/{{ user['username'] }}/claim" method="post">
 				<input type="hidden" name="github_id" value="{{ user['github_id'] }}">
 				<input type="submit" value="Claim {{ user['username'] }}">
