@@ -1,5 +1,8 @@
 import config
 
+import hashlib
+import urllib.parse
+
 import tornado.auth
 import tornado.escape
 import tornado.gen
@@ -52,3 +55,11 @@ class GithubMixin(tornado.auth.OAuth2Mixin):
 		if response.error:
 			raise Exception('%s\n%s' % (response.error, response.body))
 		return response
+
+	@staticmethod
+	def avatar_url(username, email):
+		default = 'https://identicons.github.com/%s.png' % username
+		if not email:
+			return default
+		md5 = hashlib.md5(email.encode('utf-8'))
+		return 'http://www.gravatar.com/avatar/%s?s=64&d=%s' % (md5.hexdigest(), urllib.parse.quote(default))

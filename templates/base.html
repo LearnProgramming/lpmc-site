@@ -1,28 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<title>LPMC</title>
 	<link rel="stylesheet" type="text/css" href="/css/base.css" />
+	<link rel="shortcut icon" href="/static/img/favicon.png" />
 	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools.js"></script>
 	{% block js %}{% end %}
 	{% block css %}{% end %}
 </head>
 <body>
 	<div id="wrapper">
+		<div id="color-stripe"></div>
 		<div id="topbar">
-			<div id="title"><a href="/">LPMC</a></div>
+			<div id="title"><a href="/"><img src="/static/img/lpmc-logo.png"></a></div>
 			<div id="nav">
 				<a href="/users">users</a>
+			</div>
+			<div id="userhub">
 				{% if current_user %}
-					<a href="/account">account settings</a>
-					<a href="/users/{{ current_user['username'] }}">profile</a>
-					<a href="/logout">logout</a>
+				<img src="{{current_user['avatar_url']}}">
+				<a href="/users/{{ current_user['username'] }}">{{current_user['username']}}</a>
+				<a href="/account">account settings</a>
+				<a href="/logout">logout</a>
 				{% else %}
-					<a href="/github_oauth">login</a>
+				<a href="/github_oauth">login</a>
 				{% end %}
 			</div>
 		</div>
-
-		<div id="content">{% block main %}{% end %}</div>
+		<div id="content">
+			{% block main %}{% end %}
+		</div>
 	</div>
 </body>
 </html>

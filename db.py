@@ -94,12 +94,13 @@ class MomokoDB:
 	@tornado.gen.coroutine
 	def get_userlist(self):
 		query = '''
-			SELECT users.username, mentors.username FROM users
+			SELECT users.username, mentors.username, contact_info.info FROM users
 			LEFT OUTER JOIN mentorships ON users.github_id = mentorships.mentee_id
 			LEFT OUTER JOIN users AS mentors ON mentorships.mentor_id = mentors.github_id
+			LEFT JOIN contact_info ON users.github_id = contact_info.github_id AND type = %s
 			ORDER BY users.is_mentor DESC;
 		'''
-		cursor = yield self.execute(query)
+		cursor = yield self.execute(query, ContactInfoType.EMAIL)
 		return cursor.fetchall()
 
 	@tornado.gen.coroutine

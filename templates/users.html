@@ -1,14 +1,23 @@
 {% extends "base.html" %}
 
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="/css/users.css" />
+{% end %}
+
 {% block main %}
-	<h2>users</h2>
+	<h2>Users</h2>
 	<ul>
 		{% for user in users %}
 			<li>
-				<a href="/users/{{ user[0] }}">{{ user[0] }}</a>
-				{% if user[1] is not None %}
-					&nbsp;(mentor: <a href="/users/{{ user[1] }}">{{ user[1] }}</a>)
-				{% end %}
+				<div class="user_info_block">
+				<div class="github_info">
+					<img src="{{ user['avatar_url'] }}"/>
+					<a href="/users/{{ user['username'] }}">{{ user['username'] }}</a>
+					{% if user['mentor'] is not None %}
+						&nbsp;(mentor: <a href="/users/{{ user['mentor'] }}">{{ user['mentor'] }}</a>)
+					{% end %}
+				</div>
+				<div>
 			</li>
 		{% end %}
 	</ul>

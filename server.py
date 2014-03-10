@@ -26,16 +26,12 @@ class BaseHandler(tornado.web.RequestHandler):
 	def get_current_user(self):
 		github_id = self.get_secure_cookie('github_id')
 		if github_id is not None:
-			is_mentor = self.get_secure_cookie('is_mentor')
-			username = self.get_secure_cookie('username')
-			return {'github_id': int(github_id), 'username': username, 'is_mentor': int(is_mentor)}
-
-	@tornado.gen.coroutine
-	def create_session(self, github_id):
-		user = yield self.db.get_user(github_id)
-		self.set_secure_cookie('github_id', str(user['github_id']))
-		self.set_secure_cookie('is_mentor', str(user['is_mentor']))
-		self.set_secure_cookie('username', str(user['username']))
+			return {
+				'github_id': int(github_id),
+				'is_mentor': int(self.get_secure_cookie('is_mentor')),
+				'username': self.get_secure_cookie('username'),
+				'avatar_url': self.get_secure_cookie('avatar_url'),
+			}
 
 	@property
 	def db(self):
@@ -74,6 +70,15 @@ class LoginHandler(BaseHandler, github.GithubMixin):
 				scope=['user:email'],
 			)
 
+	@tornado.gen.coroutine
+	def create_session(self, github_id):
+		user = yield self.db.get_user(github_id)
+		email = yield self.db.get_contact_info(github_id, db.ContactInfoType.EMAIL)
+		self.set_secure_cookie('github_id', str(user['github_id']))
+		self.set_secure_cookie('is_mentor', str(user['is_mentor']))
+		self.set_secure_cookie('username', user['username'])
+		self.set_secure_cookie('avatar_url', self.avatar_url(user['username'], email))
+
 class GithubEmailsHandler(BaseHandler, github.GithubMixin):
 	@tornado.web.authenticated
 	@tornado.gen.coroutine
@@ -94,10 +99,17 @@ class LogoutHandler(BaseHandler):
 		self.clear_all_cookies()
 		self.redirect('/')
 
-class UserListHandler(BaseHandler):
+class UserListHandler(BaseHandler, github.GithubMixin):
 	@tornado.gen.coroutine
 	def get(self):
-		users = yield self.db.get_userlist()
+		user_rows = yield self.db.get_userlist()
+		users = []
+		for user in user_rows:
+			users.append({
+				'username': user[0],
+				'mentor': user[1],
+				'avatar_url': self.avatar_url(user[0], user[2]),
+			})
 		self.render('users.html', users=users)
 
 class MailHandler(BaseHandler):
