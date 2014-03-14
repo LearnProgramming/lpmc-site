@@ -4,6 +4,8 @@
 
 	<h2>{{ user['username'] }}</h2>
 
+	<a href="https://github.com/{{ user['username'] }}?tab=repositories">GitHub profile</a>
+
 	{% if user['is_mentor'] %}
 		<h3>Mentees</h3>
 		{% for mentee in mentees %}
@@ -32,14 +34,16 @@
 		{% end %}
 	{% end %}
 
-	<p>
-		send mail to {{ user['username'] }}
-		<br>(note that doing so will reveal your email address to {{ user['username'] }})
-		<form action="/users/{{ user['username'] }}/mail" method="post">
-			<textarea name="body"></textarea>
-			<br>
-			<input type="submit" value="send">
-		</form>
-	</p>
+	{% if current_user %}
+		<p>
+			send mail to {{ user['username'] }}
+			<br>(note that doing so will reveal your email address to {{ user['username'] }})
+			<form action="/users/{{ user['username'] }}/mail" method="post">
+				<textarea name="body"></textarea>
+				<br>
+				<input type="submit" value="send">
+			</form>
+		</p>
+	{% end %}
 
 {% end %}
