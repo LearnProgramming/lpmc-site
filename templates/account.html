@@ -14,7 +14,7 @@
 
 	Contact info:
 	{% for ci in contact_info %}
-		{{ ci }}
+		{{ ci[1] }}
 	{% end %}
 	<form id="emails">
 		<input type="button" value="Update emails" id="update_emails">

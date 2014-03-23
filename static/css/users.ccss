@@ -1,19 +1,14 @@
-.user_info_block:
-	border-radius: 20px
-	background-color: #fff
-	width: 400px
-	padding: 15px
-	box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.15)
+.user_info:
+	padding: 15px 0px
+	border-top: 1px solid #eaeaea
 
-	.github_info:
-		img:
-			position: relative
-			top: 5px
-			padding: 8px
-			width: 64px
-			height: 64px
-			float: left
-
-		span:
-			padding-right: 15px
-			display: block
+	img:
+		top: 5px
+		margin-right: 30px
+		width: 64px
+		height: 64px
+		display: inline-block
+		vertical-align: middle
+	
+	a:
+		vertical-align: middle
