@@ -108,4 +108,6 @@ ul:
 	color: #333
 
 .answer:
-	margin-botom: 15px
+	margin-bottom: 30px
+	padding-left: 15px
+	border-left: 6px solid #ddd
