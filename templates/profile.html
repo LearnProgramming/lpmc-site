@@ -30,8 +30,8 @@
 		{% if answers %}
 			{% for q, a in zip(questions, answers) %}
 				{% if a %}
-					<div>{{ q }}</div>
-					<div>{{ a }}</div>
+					<div class="question">{{ q }}</div>
+					<div class="answer">{{ a }}</div>
 				{% end %}
 			{% end %}
 		{% end %}

@@ -102,3 +102,10 @@ ul:
 #profile-avatar:
 	width: 200px
 	height: 200px
+
+.question:
+	margin-bottom: 15px
+	color: #333
+
+.answer:
+	margin-botom: 15px
