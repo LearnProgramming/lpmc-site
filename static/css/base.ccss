@@ -11,8 +11,12 @@ body:
 
 a:
 	text-decoration: none
-	color: #343B4E
-	font-weight: bold
+	color: #00BFA8
+	border-bottom: 2px solid #00BFA8
+
+	&:hover:
+		color: #CB5847
+		border-color: #CB5847
 
 img:
 	border-radius: 4px
@@ -56,16 +60,20 @@ ul:
 #topbar:
 	position: relative
 	padding: 30px 0px
-	background: #343B4E
+	background: #fff
+	border-bottom: 1px solid #eaeaea
 
 	a:
-		color: #C1C5D0
+		color: #777
 
 		&:hover:
-			color: #fff
+			color: #333
 
 	#title:
 		display: inline-block
+		
+		a:
+			border: none
 
 	#nav:
 		display: inline-block
@@ -83,6 +91,10 @@ ul:
 		a:
 			padding-right: 15px
 			vertical-align: middle
+			border: none
+
+			&:last-child:
+				padding-right: 0px
 
 		#user-nav:
 			margin-top: -7px
