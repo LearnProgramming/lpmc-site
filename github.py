@@ -62,4 +62,4 @@ class GithubMixin(tornado.auth.OAuth2Mixin):
 		if not email:
 			return default
 		md5 = hashlib.md5(email.encode('utf-8'))
-		return 'http://www.gravatar.com/avatar/%s?s=64&d=%s' % (md5.hexdigest(), urllib.parse.quote(default))
+		return 'http://www.gravatar.com/avatar/%s?s=256&256=%s' % (md5.hexdigest(), urllib.parse.quote(default))
