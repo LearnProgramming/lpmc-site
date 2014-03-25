@@ -31,6 +31,9 @@ set local access to `trust` (as opposed to the default `peer`)
 1. Restart postgresql  
 `sudo invoke-rc.d postgresql restart`
 
+1. Load the schema  
+`psql -U lpmc < schema.sql`
+
 1. Visit [the GitHub applications page](https://github.com/settings/applications)
 and register a new developer application.
 The authorization callback URL should probably be `http://localhost:8888/github_oauth`
