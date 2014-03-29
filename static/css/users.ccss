@@ -1,6 +1,7 @@
 .user_info:
-	padding: 15px 0px
-	border-top: 1px solid #eaeaea
+	padding: 15px
+	background: #1D222D
+	border-radius: 4px
 
 	img:
 		top: 5px

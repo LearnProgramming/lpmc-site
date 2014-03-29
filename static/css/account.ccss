@@ -4,3 +4,59 @@ textarea:
 	width: 50%
 	height: 100px
 	font: inherit
+
+label:
+	background: #1A1D29
+	color: #f5f5f5
+	padding: 15px 30px
+	display: inline-block
+	border-top-left-radius: 4px
+	border-bottom-left-radius: 4px
+	vertical-align: middle
+
+#email:
+	background: #212531
+	color: #f5f5f5
+	padding: 15px 30px
+	display: inline-block
+	vertical-align: middle
+
+#update-emails:
+	border: none
+	background: #1A1D29
+	color: #f5f5f5
+	padding: 16px 15px 17px
+	margin: 0
+	display: inline-block
+	border-top-right-radius: 4px
+	border-bottom-right-radius: 4px
+	vertical-align: middle
+	cursor: pointer
+
+	&:focus:
+		outline: none
+
+.dropdown:
+	display: inline-block
+	vertical-align: middle
+	position: relative
+
+.menu:
+	position: absolute
+	background: #212531
+	color: #f5f5f5
+	width: 100%
+	border-bottom-left-radius: 4px
+	border-bottom-right-radius: 4px
+	margin-top: -4px
+
+	div:
+		padding: 15px
+
+		&:hover:
+			cursor: pointer
+			background: #1A1D29
+
+		&:last-child:
+			border-bottom-left-radius: 4px
+			border-bottom-right-radius: 4px
