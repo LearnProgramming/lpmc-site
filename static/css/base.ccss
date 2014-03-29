@@ -92,14 +92,13 @@ ul:
 #topbar:
 	position: relative
 	padding: 30px 0px
-	background: #f5f5f5
 
 	a:
-		color: #292F3C
+		color: #A1B7D5
 		font-weight: bold
 
 		&:hover:
-			color: #333
+			color: #fff
 
 	#title:
 		display: inline-block
@@ -137,7 +136,7 @@ ul:
 
 .question:
 	margin-bottom: 15px
-	color: #333
+	color: #A1B7D5
 
 .answer:
 	margin-bottom: 30px
