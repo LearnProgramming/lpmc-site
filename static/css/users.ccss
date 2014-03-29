@@ -2,6 +2,7 @@
 	padding: 15px
 	background: #1D222D
 	border-radius: 4px
+	margin-bottom: 5px
 
 	img:
 		top: 5px
