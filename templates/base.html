@@ -2,37 +2,51 @@
 <html>
 <head>
 	<title>LPMC</title>
-	<link rel="stylesheet" type="text/css" href="/css/base.css" />
+	<link rel="stylesheet" type="text/css" href="/static/libs/bootstrap.css" />
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+<!-- 	<link rel="stylesheet" type="text/css" href="/css/base.css" /> -->
 	<link rel="shortcut icon" href="/static/img/favicon.png" />
 	<script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools.js"></script>
 	{% block js %}{% end %}
 	{% block css %}{% end %}
 </head>
 <body>
-    <div id="topbar">
-        <div class="wrapper">
-            <div id="title"><a href="/">lpmc</a></div>
-            <div id="nav">
-                {% if current_user %}
-                    <div id="user-nav">
-                        <img src="{{current_user['avatar_url']}}">
-                        <a href="/users/{{ current_user['username'] }}">{{current_user['username']}}</a>
-                        <a href="/users">users</a>
-                        <a href="/account">account settings</a>
-                        <a href="/logout">logout</a>
-                    </div>
-                {% else %}
-                    <a href="/users">users</a>
-                    <a href="/github_oauth">login</a>
-                {% end %}
-            </div>
-        </div>
-    </div>
-	<div class="wrapper">
-		<div id="content">
-			{% block main %}{% end %}
+	<nav class="navbar navbar-default navbar-static-top" role="navigation">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="/">LPMC</a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="/users">Users</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					{% if not current_user %}
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/users">Profile</a></li>
+							<li><a href="/account">Account</a></li>
+							<li><a href="/logout">Logout</a></li>
+						</ul>
+					</li>
+					{% else %}
+					<li><a href="/github_oauth">Login</a><li>
+					{% end %}
+				</ul>
+			</div>
 		</div>
+	</nav>
+	<div class="container">
+		{% block main %}{% end %}
 	</div>
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </body>
 </html>
