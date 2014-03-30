@@ -1,4 +1,10 @@
-*:
+body:
+	background-color: #dcdcdc
+	
+.jumbotron:
+	background-color: #fdfdfd
+	box-shadow: inset 0 0 10px #888
+/**:
 	box-sizing: border-box
 
 body:
@@ -142,3 +148,4 @@ ul:
 	margin-bottom: 30px
 	padding-left: 15px
 	border-left: 6px solid #ddd
+*/
