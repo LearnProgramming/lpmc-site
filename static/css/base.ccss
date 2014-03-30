@@ -1,9 +1,13 @@
 body:
 	background-color: #dcdcdc
-	
+
 .jumbotron:
 	background-color: #fdfdfd
 	box-shadow: inset 0 0 10px #888
+
+	h1:
+		font-size: 38px
+		margin-bottom: 38px
 /**:
 	box-sizing: border-box
 
