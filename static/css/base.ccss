@@ -8,6 +8,20 @@ body:
 	h1:
 		font-size: 38px
 		margin-bottom: 38px
+
+.navbar:
+	img:
+		float: left
+		width: 32px
+		height: 32px
+		margin-right: 5px 
+		margin-top: 15px
+		vertical-align: middle
+		display: inline
+		border-radius: 50%
+		border: 2px solid #fff
+	#nav-dropdown:
+		float: right
 /**:
 	box-sizing: border-box
 
