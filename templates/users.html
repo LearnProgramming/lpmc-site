@@ -6,13 +6,13 @@
 
 {% block main %}
 	<h2>Users</h2>
-    {% for user in users %}
-            <div class="user_info">
-				<img src="{{ user['avatar_url'] }}"/>
-				<a href="/users/{{ user['username'] }}">{{ user['username'] }}</a>
-				{% if user['mentor'] is not None %}
-					&nbsp;(mentor: <a href="/users/{{ user['mentor'] }}">{{ user['mentor'] }}</a>)
-				{% end %}
-            </div>
-    {% end %}
+	{% for user in users %}
+		<div class="well user-list">
+			<img src="{{ user['avatar_url'] }}"/>
+			<a href="/users/{{ user['username'] }}">{{ user['username'] }}</a>
+			{% if user['mentor'] is not None %}
+				&nbsp;(mentor: <a href="/users/{{ user['mentor'] }}">{{ user['mentor'] }}</a>)
+			{% end %}
+		</div>
+	{% end %}
 {% end %}
