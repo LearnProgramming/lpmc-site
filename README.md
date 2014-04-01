@@ -1,6 +1,4 @@
-# LPMC Site
-
-### Getting Started
+### Getting started
 
 1. Install python 3.3 and postgresql (we use a [new generator feature only available in 3.3](http://www.python.org/download/releases/3.3.4/))
 
@@ -43,3 +41,9 @@ The authorization callback URL should probably be `http://localhost:8888/github_
 1. You can now run the server  
 `./server.py`  
 Visit `http://localhost:8888` or the specified port in `config.yaml`
+
+#### Using Vagrant
+
+If you want to set up a virtual machine for this project using [Vagrant](http://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/),
+simply follow step 2 to clone the project and run `vagrant up`.
+Once complete you can skip to step 10 and do the rest of the steps in `vagrant ssh`.
