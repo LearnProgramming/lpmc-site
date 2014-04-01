@@ -9,10 +9,10 @@ pyvenv-3.3 venv
 source venv/bin/activate
 wget --no-verbose https://raw.github.com/pypa/pip/master/contrib/get-pip.py
 python3 get-pip.py
+rm get-pip.py
 pip3 install -r /vagrant/requirements.txt
 cat <<EOF >> /home/vagrant/.bashrc
-VIRTUAL_ENV="/home/vagrant/env"
-PATH=\$VIRTUAL_ENV/bin:\$PATH
+VIRTUAL_ENV_DISABLE_PROMPT=1 source /home/vagrant/venv/bin/activate
 EOF
 
 sudo sed 's/\(local\s\+all\s\+all\s\+\)peer/\1trust/' -i /etc/postgresql/9.3/main/pg_hba.conf
