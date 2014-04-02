@@ -94,7 +94,7 @@ class MomokoDB:
 	@tornado.gen.coroutine
 	def get_userlist(self):
 		query = '''
-			SELECT users.username, mentors.username, contact_info.info FROM users
+			SELECT users.username, mentors.username AS mentor_username, contact_info.info, users.github_id, users.is_mentor FROM users
 			LEFT OUTER JOIN mentorships ON users.github_id = mentorships.mentee_id
 			LEFT OUTER JOIN users AS mentors ON mentorships.mentor_id = mentors.github_id
 			LEFT JOIN contact_info ON users.github_id = contact_info.github_id AND type = %s
@@ -102,6 +102,17 @@ class MomokoDB:
 		'''
 		cursor = yield self.execute(query, ContactInfoType.EMAIL)
 		return cursor.fetchall()
+
+	@tornado.gen.coroutine
+	def get_user_ids(self):
+		query = 'SELECT users.github_id FROM users'
+		cursor = yield self.execute(query)
+		return cursor.fetchall()
+
+	@tornado.gen.coroutine
+	def update_is_mentor(self, users, is_mentor):
+		query = 'UPDATE users SET is_mentor = %s WHERE github_id IN %s'
+		yield self.execute(query, is_mentor, tuple(users))
 
 	@tornado.gen.coroutine
 	def get_mentor(self, github_id):

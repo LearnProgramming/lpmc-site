@@ -106,9 +106,9 @@ class UserListHandler(BaseHandler, github.GithubMixin):
 		users = []
 		for user in user_rows:
 			users.append({
-				'username': user[0],
-				'mentor': user[1],
-				'avatar_url': self.avatar_url(user[0], user[2]),
+				'username': user['username'],
+				'mentor': user['mentor_username'],
+				'avatar_url': self.avatar_url(user['username'], user['info']),
 			})
 		self.render('users.html', users=users)
 
@@ -216,6 +216,33 @@ class DeleteAccountHandler(BaseHandler):
 		yield self.db.delete_user(self.current_user['github_id'])
 		self.redirect('/logout')
 
+class AdminHandler(BaseHandler):
+	@tornado.web.authenticated
+	@tornado.gen.coroutine
+	def get(self):
+		if not self.current_user['is_mentor']:
+			raise tornado.web.HTTPError(403)
+		user_rows = yield self.db.get_userlist()
+		self.render('admin.html', users=user_rows)
+
+	@tornado.web.authenticated
+	@tornado.gen.coroutine
+	def post(self):
+		if not self.current_user['is_mentor']:
+			raise tornado.web.HTTPError(403)
+		add_mentor_set = set(int(x) for x in self.request.arguments.keys())
+		user_rows = yield self.db.get_user_ids()
+		users = []
+		for user in user_rows:
+			users.append(user['github_id'])
+		remove_mentor_set = set(users) - add_mentor_set
+		remove_mentor_set.discard(self.current_user['github_id'])
+		if len(add_mentor_set) > 0:
+			self.db.update_is_mentor(add_mentor_set, 1)
+		if len(remove_mentor_set) > 0:
+			self.db.update_is_mentor(remove_mentor_set, 0)
+		self.redirect('/admin')
+
 class CSSHandler(tornado.web.RequestHandler):
 	def get(self, css_path):
 		css_path = os.path.join(os.path.dirname(__file__), 'static', css_path) + '.ccss'
@@ -239,6 +266,7 @@ if __name__ == '__main__':
 			(r'/account/contact_info', ContactInfoHandler),
 			(r'/account/questionnaire', QuestionnaireHandler),
 			(r'/account/delete', DeleteAccountHandler),
+			(r'/admin', AdminHandler),
 			(r'/(css/.+)\.css', CSSHandler),
 		],
 		template_path=os.path.join(os.path.dirname(__file__), 'templates'),

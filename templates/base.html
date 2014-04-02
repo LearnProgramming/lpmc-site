@@ -38,6 +38,9 @@
 						<ul class="dropdown-menu">
 							<li><a href="/users/{{ current_user['username'] }}">Profile</a></li>
 							<li><a href="/account">Account</a></li>
+							{% if current_user['is_mentor'] %}
+								<li><a href="/admin">Admin</a></li>
+							{% end %}
 							<li><a href="/logout">Logout</a></li>
 						</ul>
 					</li>

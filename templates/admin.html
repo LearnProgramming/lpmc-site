@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="/css/users.css" />
+{% end %}
+
+{% block main %}
+	<div class="row">
+		<div class="col-md-12">
+			<form action="/admin" method="post">
+				<input id="admin-save" class="btn btn-success pull-right" type="submit" value="Save Changes">
+				<table class="table table-responsive">
+					<thead>
+						<tr>
+							<th>Username</th>
+							<th>Mentor</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for user in users %}
+						<tr>
+							<td><a href="/users/{{ user['username'] }}">{{ user['username'] }}</a></td>
+							{% if user['is_mentor'] %}
+								<td><input type="checkbox" name="{{ user['github_id'] }}" checked></td>
+							{% else %}
+								<td><input type="checkbox" name="{{ user['github_id'] }}"></td>
+							{% end %}
+						</tr>
+						{% end %}
+					</tbody>
+				</table>
+			</form>
+		</div>
+	</div>
+{% end %}

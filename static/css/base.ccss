@@ -1,4 +1,3 @@
-/* base.html */
 html:
 	position: relative
 	min-height: 100%
@@ -52,7 +51,6 @@ body:
 .form-control:
 	border: 1px solid #bcbcbc
 
-/* users.html */
 .user-list:
 
 	img:
@@ -62,12 +60,10 @@ body:
 		margin-right: 15px
 		border-radius: 4px
 
-/* profile.html */
 #profile-avatar:
 	border-radius: 4px
 	margin-top: 21px
 
-/* account.html */
 .btn-group:
 	float: left
 	width: 100%
@@ -87,6 +83,18 @@ body:
 		left: auto
 		right: 0
 		width: 85%
+
+#admin-save:
+	margin-bottom: 20px
+
+.table:
+	thead:
+		background-color: #2c3e50
+		color: #ffffff
+	tbody:
+		tr:
+			background-color: #ffffff
+			border-bottom: 1px solid #dcdcdc
 /**:
 	box-sizing: border-box
 
