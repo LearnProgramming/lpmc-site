@@ -1,52 +1,59 @@
 {% extends "base.html" %}
-
 {% block main %}
-	<img id="profile-avatar" src="{{ avatar_url }}"/>
-
-	<h2>{{ user['username'] }}</h2>
-
-	<a href="https://github.com/{{ user['username'] }}?tab=repositories">GitHub profile</a>
-
-	{% if user['is_mentor'] %}
-		<h3>Mentees</h3>
-		{% for mentee in mentees %}
-			<a href="/users/{{ mentee['username'] }}">{{ mentee['username'] }}</a>
-		{% end %}
-	{% else %}
-		{% if mentor %}
-			<h3>Mentor: <a href="{{ mentor['username'] }}">{{ mentor['username'] }}</a></h3>
-			{% if current_user and current_user['github_id'] == mentor['github_id'] %}
-				<form action="/users/{{ user['username'] }}/unclaim" method="post">
-					<input type="hidden" name="github_id" value="{{ user['github_id'] }}">
-					<input type="submit" value="Unclaim {{ user['username'] }}">
-				</form>
-			{% end %}
-		{% elif current_user and current_user['is_mentor'] %}
-			<form action="/users/{{ user['username'] }}/claim" method="post">
-				<input type="hidden" name="github_id" value="{{ user['github_id'] }}">
-				<input type="submit" value="Claim {{ user['username'] }}">
-			</form>
-		{% end %}
-		{% if answers %}
-			{% for q, a in zip(questions, answers) %}
-				{% if a %}
-					<div class="question">{{ q }}</div>
-					<div class="answer">{{ a }}</div>
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-3">
+			<img id="profile-avatar" src="{{ avatar_url }}"/>
+		</div>
+		<div class="col-md-5">
+			<h2>{{ user['username'] }}</h2>
+			<h4><a href="https://github.com/{{ user['username'] }}?tab=repositories">GitHub profile</a></h4>
+			{% if user['is_mentor'] %}
+				<h3>Mentees</h3>
+				{% for mentee in mentees %}
+					<a href="/users/{{ mentee['username'] }}">{{ mentee['username'] }}</a>
+				{% end %}
+			{% else %}
+				{% if mentor %}
+					<h3>Mentor: <a href="{{ mentor['username'] }}">{{ mentor['username'] }}</a></h3>
+					{% if current_user and current_user['github_id'] == mentor['github_id'] %}
+						<form action="/users/{{ user['username'] }}/unclaim" method="post">
+							<div class="form-group">
+								<input type="hidden" name="github_id" value="{{ user['github_id'] }}">
+								<input type="submit" class="btn btn-warning" value="Unclaim {{ user['username'] }}">
+							</div>
+						</form>
+					{% end %}
+				{% elif current_user and current_user['is_mentor'] %}
+					<form action="/users/{{ user['username'] }}/claim" method="post">
+						<div class="form-group">
+							<input type="hidden" name="github_id" value="{{ user['github_id'] }}">
+							<input type="submit" class"btn btn-default" value="Claim {{ user['username'] }}">
+						</div>
+					</form>
+				{% end %}
+				{% if answers %}
+					{% for q, a in zip(questions, answers) %}
+						{% if a %}
+							<div class="question">{{ q }}</div>
+							<div class="answer">{{ a }}</div>
+						{% end %}
+					{% end %}
 				{% end %}
 			{% end %}
-		{% end %}
-	{% end %}
-
-	{% if current_user %}
-		<p>
-			send mail to {{ user['username'] }}
-			<br>(note that doing so will reveal your email address to {{ user['username'] }})
-			<form action="/users/{{ user['username'] }}/mail" method="post">
-				<textarea name="body"></textarea>
-				<br>
-				<input type="submit" value="send">
-			</form>
-		</p>
-	{% end %}
-
+			{% if current_user %}
+				<p>
+					Send mail to {{ user['username'] }}<br>
+					(note that doing so will reveal your email address to {{ user['username'] }})
+				</p>
+				<form action="/users/{{ user['username'] }}/mail" method="post">
+					<div class="form-group">
+						<textarea class="form-control" name="body" rows="4"></textarea>
+					</div>
+					<input type="submit" class="btn btn-default" value="Send Message">
+				</form>
+			{% end %}
+		</div>
+		<div class="col-md-2"></div>
+	</div>
 {% end %}
