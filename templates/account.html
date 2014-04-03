@@ -1,44 +1,45 @@
 {% extends "base.html" %}
-
 {% block js %}
 	<script src="/static/js/account.js"></script>
 {% end %}
-
-{% block css %}
-<!-- 	<link rel="stylesheet" type="text/css" href="/css/account.css" /> -->
-{% end %}
-
 {% block main %}
-
-	<h2>Account Settings</h2>
-
-	<label>Email</label>
-	<div class="dropdown">
-		<div id="email">
-			{% for ci in contact_info %}
-				{{ ci[1] }}
+<div class="row">
+	<div class="col-md-3"></div>
+	<div class="col-md-6">
+		<h2>Account Settings</h2>
+		<div class="btn-group">
+			<button type="button" class="btn btn-default disabled email-label">Email</button>
+			<button type="button" class="btn btn-default dropdown-toggle email" data-toggle="dropdown">
+				{{ contact_info[0][1] }}
+				<i class="fa fa-chevron-down email-caret"></i>
+			</button>
+			<ul class="dropdown-menu email-dropdown" role="menu">
+				{% for ci in contact_info %}
+					<li><a href="#">{{ ci[1] }}</a></li>
+				{% end %}
+			</ul>
+		</div>
+	<div class="col-md-3"></div>
+</div>
+<!-- <div class="row">
+	<div class="col-md-3"></div>
+	<div class="col-md-6">
+		<h3>Mentee Questionnaire</h2>
+		<p>
+			(If you are looking to become a mentor, you don't need to fill this out. Find us in <code>#lpmc</code> on Freenode instead.)
+		</p>
+		<form action="/account/questionnaire" method="post">
+			{% for i, (q, a) in enumerate(zip(questions, answers)) %}
+				<p>
+					{{ q }}
+					<textarea name="q{{ i + 1 }}">{{ a }}</textarea>
+				</p>
 			{% end %}
-		</div>
-		<button id="update-emails">
-			<i class="fa fa-chevron-down"></i>
-		</button>
-		<div id="emails" class="menu">
-		</div>
+			<input type="submit" value="Save">
+			<a class="button red" href="/account/delete">Delete my account</a>
+		</form>
 	</div>
-
-	<h3>Mentee Questionnaire</h2>
-	<p>
-		(If you are looking to become a mentor, you don't need to fill this out. Find us in <code>#lpmc</code> on Freenode instead.)
-	</p>
-	<form action="/account/questionnaire" method="post">
-		{% for i, (q, a) in enumerate(zip(questions, answers)) %}
-			<p>
-				{{ q }}
-				<textarea name="q{{ i + 1 }}">{{ a }}</textarea>
-			</p>
-		{% end %}
-		<input type="submit" value="Save">
-		<a class="button red" href="/account/delete">Delete my account</a>
-	</form>
+	<div class="col-md-3"></div>
+</div> -->
 
 {% end %}

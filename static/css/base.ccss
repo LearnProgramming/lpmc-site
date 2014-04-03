@@ -1,3 +1,4 @@
+/* base.html */
 body:
 	background-color: #dcdcdc
 
@@ -33,6 +34,7 @@ body:
 .form-control:
 	border: 1px solid #bcbcbc
 
+/* users.html */
 .user-list:
 
 	img:
@@ -42,9 +44,31 @@ body:
 		margin-right: 15px
 		border-radius: 4px
 
+/* profile.html */
 #profile-avatar:
 	border-radius: 4px
 	margin-top: 21px
+
+/* account.html */
+.btn-group:
+	float: left
+	width: 100%
+
+	.email-label:
+		width: 15%
+
+	.email:
+		width: 85%
+		text-align: left
+
+	.email-caret:
+		float: right
+		margin-top: 1%
+
+	.email-dropdown:
+		left: auto
+		right: 0
+		width: 85%
 /**:
 	box-sizing: border-box
 
