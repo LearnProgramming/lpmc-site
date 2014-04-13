@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 
 {% block main %}
-
-	Are you sure?
-	<form action="/account/delete" method="post">
-		<input type="submit" value="Yes, I'm sure.">
-	</form>
-	<a href="/account">No, I changed my mind.</a>
-
+	<div class="row">
+		<div class="col-md-3"></div>
+		<div class="col-md-6">
+			<div class="well center">
+				<h4>Are you sure?</h4>
+				<form action="/account/delete" method="post">
+					<input class="btn btn-danger" type="submit" value="Yes, delete my account.">
+				</form>
+				<br>
+				<a href="/account">No, I changed my mind.</a>
+			</div>
+		</div>
+		<div class="col-md-3"></div>
+	</div>
 {% end %}
