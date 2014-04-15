@@ -13,7 +13,7 @@ CREATE TABLE users (
 CREATE TABLE contact_info (
 	github_id integer NOT NULL references users(github_id),
 	type smallint NOT NULL,
-	info varchar(32) NOT NULL,
+	info varchar(64) NOT NULL,
 	constraint contact_info_unique unique(github_id, type)
 );
 
