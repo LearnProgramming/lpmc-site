@@ -9,16 +9,16 @@
 			<img id="profile-avatar" src="{{ avatar_url }}"/>
 		</div>
 		<div class="col-md-5">
-			<h2>{{ user['username'] }}</h2>
-			<h4><a href="https://github.com/{{ user['username'] }}?tab=repositories">GitHub profile</a></h4>
+			<h1>{{ user['username'] }}</h1>
+			<p id="profile-link"><a href="https://github.com/{{ user['username'] }}?tab=repositories">GitHub profile</a></p>
 			{% if user['is_mentor'] %}
-				<h3>Mentees</h3>
+				<h2>Mentees</h2>
 				{% for mentee in mentees %}
 					<a href="/users/{{ mentee['username'] }}">{{ mentee['username'] }}</a>
 				{% end %}
 			{% else %}
 				{% if mentor %}
-					<h3>Mentor: <a href="{{ mentor['username'] }}">{{ mentor['username'] }}</a></h3>
+					<h2>Mentor: <a href="{{ mentor['username'] }}">{{ mentor['username'] }}</a></h2>
 					{% if current_user and current_user['github_id'] == mentor['github_id'] %}
 						<form action="/users/{{ user['username'] }}/unclaim" method="post">
 							<div class="form-group">
@@ -31,7 +31,7 @@
 					<form action="/users/{{ user['username'] }}/claim" method="post">
 						<div class="form-group">
 							<input type="hidden" name="github_id" value="{{ user['github_id'] }}">
-							<input type="submit" class"btn btn-default" value="Claim {{ user['username'] }}">
+							<input type="submit" class="btn btn-success" value="Claim {{ user['username'] }}">
 						</div>
 					</form>
 				{% end %}
@@ -45,6 +45,7 @@
 				{% end %}
 			{% end %}
 			{% if current_user %}
+				<br>
 				<p>
 					Send mail to {{ user['username'] }}<br>
 					(note that doing so will reveal your email address to {{ user['username'] }})

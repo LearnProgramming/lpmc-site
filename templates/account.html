@@ -9,38 +9,42 @@
 <div class="row">
 	<div class="col-md-2"></div>
 	<div class="col-md-4">
-		<h2>Account Settings</h2>
-		<h3>Email</h3>
-		<div class="dropdown">
-			<div id="email">
-				{% for ci in contact_info %}
-					{{ ci[1] }}
-				{% end %}
+		<section>
+			<h1>Account Settings</h1>
+			<h2>Email</h2>
+			<div class="dropdown">
+				<div id="email">
+					{% for ci in contact_info %}
+						{{ ci[1] }}
+					{% end %}
+				</div>
+				<button id="update-emails">
+					<i class="fa fa-chevron-down"></i>
+				</button>
+				<div id="emails" class="menu"></div>
 			</div>
-			<button id="update-emails">
-				<i class="fa fa-chevron-down"></i>
-			</button>
-			<div id="emails" class="menu"></div>
-		</div>
+		</section>
 	</div>
 	<div class="col-md-4">
-		<h2>Mentee Questionnaire</h2>
-		<p>
-			(If you are looking to become a mentor, you don't need to fill this out. Find us in <code>#lpmc</code> on Freenode instead.)
-		</p>
-		<br>
-		<form action="/account/questionnaire" method="post">
-			{% for i, (q, a) in enumerate(zip(questions, answers)) %}
-				<div class="form-group">
-					<p>
-						{{ q }}
-						<textarea class="form-control" rows="5" name="q{{ i + 1 }}">{{ a }}</textarea>
-					</p>
-				</div>
-			{% end %}
-			<input class="btn btn-primary save" type="submit" value="Save">
-			<a class="btn btn-danger" href="/account/delete">Delete my account</a>
-		</form>
+		<section>
+			<h1>Mentee Questionnaire</h1>
+			<p>
+				(If you are looking to become a mentor, you don't need to fill this out. Find us in <code>#lpmc</code> on Freenode instead.)
+			</p>
+			<br>
+			<form action="/account/questionnaire" method="post">
+				{% for i, (q, a) in enumerate(zip(questions, answers)) %}
+					<div class="form-group">
+						<p>
+							{{ q }}
+							<textarea class="form-control" rows="5" name="q{{ i + 1 }}">{{ a }}</textarea>
+						</p>
+					</div>
+				{% end %}
+				<input class="btn btn-primary save" type="submit" value="Save">
+				<a class="btn btn-danger" href="/account/delete">Delete my account</a>
+			</form>
+		</section>
 	</div>
 	<div class="col-md-2"></div>
 </div>

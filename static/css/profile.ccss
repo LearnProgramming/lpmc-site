@@ -3,3 +3,6 @@
   width: 200px
   border-radius: 4px
   margin-top: 21px
+
+#profile-link:
+  font-size: 18px
