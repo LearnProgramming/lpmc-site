@@ -1,16 +1,8 @@
-.user_info:
-	padding: 15px
-	background: #1D222D
-	border-radius: 4px
-	margin-bottom: 5px
+.user-list:
 
 	img:
-		top: 5px
-		margin-right: 30px
-		width: 64px
-		height: 64px
-		display: inline-block
+		width: 60px
+		height: 60px
 		vertical-align: middle
-	
-	a:
-		vertical-align: middle
+		margin-right: 15px
+		border-radius: 4px
