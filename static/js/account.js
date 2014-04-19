@@ -1,6 +1,6 @@
 window.addEvent('domready', function() {
 	'use strict';
-	var $j = jQuery.noConflict();
+	jQuery.noConflict();
 
 	document.addEvent('click', function() {
 		var emails = $('emails');

@@ -3,6 +3,7 @@
 set -e
 
 sudo aptitude update
+sudo DEBCONF_FRONTEND=noninteractive aptitude --quiet --assume-yes dist-upgrade
 sudo aptitude --quiet --assume-yes install python3.3 python3.3-dev postgresql-9.3 libpq-dev
 
 pyvenv-3.3 venv
