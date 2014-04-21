@@ -108,6 +108,7 @@ class UserListHandler(BaseHandler, github.GithubMixin):
 			users.append({
 				'username': user['username'],
 				'mentor': user['mentor_username'],
+				'is_mentor': user['is_mentor'],
 				'avatar_url': self.avatar_url(user['username'], user['info']),
 			})
 		self.render('users.html', users=users)

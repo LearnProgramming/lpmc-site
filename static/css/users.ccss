@@ -6,3 +6,7 @@
 		vertical-align: middle
 		margin-right: 15px
 		border-radius: 4px
+
+.is-mentor:
+	float: right;
+	margin-top: 20px;
