@@ -1,7 +1,9 @@
 {% extends "base.html" %}
+
 {% block css %}
 	<link rel="stylesheet" type="text/css" href="/css/profile.css"/>
 {% end %}
+
 {% block main %}
 	<div class="row">
 		<div class="col-md-2"></div>
@@ -45,7 +47,17 @@
 				{% end %}
 			{% end %}
 			{% if current_user %}
-				<br>
+				<p>
+					{% if current_user['is_mentor'] %}
+						<form action="/users/{{ user['username'] }}/note" method="post" class="form-inline">
+							<div class="form-group">
+								<label for="note">Note:</label>&nbsp;
+								<input type="text" name="note" value="{{ note or ''}}" class="form-control" id="note">
+							</div>
+							<input type="submit" class="btn btn-primary" value="save">
+						</form>
+					{% end %}
+				</p>
 				<p>
 					Send mail to {{ user['username'] }}<br>
 					(note that doing so will reveal your email address to {{ user['username'] }})

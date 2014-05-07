@@ -68,7 +68,7 @@ class MomokoDB:
 
 	@tornado.gen.coroutine
 	def get_user_by(self, field, value):
-		query = 'SELECT github_id, username, access_token, is_mentor FROM users WHERE ' + field + ' = %s;'
+		query = 'SELECT github_id, username, access_token, is_mentor, note FROM users WHERE ' + field + ' = %s;'
 		cursor = yield self.execute(query, value)
 		return cursor.fetchone()
 

@@ -175,16 +175,21 @@ class ProfileHandler(BaseHandler, github.GithubMixin):
 	@tornado.gen.coroutine
 	def get(self, username):
 		user = yield self.db.get_user_by('username', username)
-		email = yield self.db.get_contact_info(user['github_id'], db.ContactInfoType.EMAIL)
+		github_id = user['github_id']
+		email = yield self.db.get_contact_info(github_id, db.ContactInfoType.EMAIL)
 		mentor = questions = answers = None
 		mentees = []
+
 		if user['is_mentor']:
 			mentees = yield self.db.get_mentees(user)
 		else:
-			mentor = yield self.db.get_mentor(user['github_id'])
+			mentor = yield self.db.get_mentor(github_id)
 			if self.current_user and self.current_user['is_mentor']:
-				questions, answers = yield self.db.get_questionnaire(user['github_id'])
-		self.render('profile.html', user=user, avatar_url=self.avatar_url(user['username'], email), mentor=mentor, mentees=mentees, questions=questions, answers=answers)
+				questions, answers = yield self.db.get_questionnaire(github_id)
+				note = yield self.db.get_note(github_id)
+
+		self.render('profile.html', user=user, avatar_url=self.avatar_url(user['username'], email),
+		            mentor=mentor, mentees=mentees, questions=questions, answers=answers, note=user['note'])
 
 class AccountHandler(BaseHandler):
 	@tornado.web.authenticated
