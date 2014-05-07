@@ -104,13 +104,13 @@ class UserListHandler(BaseHandler, github.GithubMixin):
 	def get(self):
 		user_rows = yield self.db.get_userlist()
 		users = []
+		is_mentor = (self.current_user and self.current_user['is_mentor'])
 		for user in user_rows:
-			users.append({
-				'username': user['username'],
-				'mentor': user['mentor_username'],
-				'is_mentor': user['is_mentor'],
-				'avatar_url': self.avatar_url(user['username'], user['info']),
-			})
+			user = user.copy()
+			user['avatar_url'] = self.avatar_url(user['username'], user['info'])
+			if not is_mentor:
+				user['note'] = None
+			users.append(user)
 		self.render('users.html', users=users)
 
 class MailHandler(BaseHandler):

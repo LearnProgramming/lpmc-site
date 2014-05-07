@@ -8,5 +8,8 @@
 		border-radius: 4px
 
 .is-mentor:
-	float: right;
-	margin-top: 20px;
+	float: right
+	margin-top: 20px
+
+.label-note:
+	margin-left: 20px

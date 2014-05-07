@@ -10,8 +10,11 @@
 				<div class="well user-list">
 					<img src="{{ user['avatar_url'] }}"/>
 					<a href="/users/{{ user['username'] }}">{{ user['username'] }}</a>
-					{% if user['mentor'] is not None %}
-						&nbsp;(mentor: <a href="/users/{{ user['mentor'] }}">{{ user['mentor'] }}</a>)
+					{% if user['note'] %}
+						<span class="label label-info label-note">{{ user['note'] }}</span>
+					{% end %}
+					{% if user['mentor_username'] %}
+						&nbsp;(mentor: <a href="/users/{{ user['mentor_username'] }}">{{ user['mentor_username'] }}</a>)
 					{% elif user['is_mentor'] == 1 %}
 						<span class="badge is-mentor">MENTOR</span>
 					{% end %}
