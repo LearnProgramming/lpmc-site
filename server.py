@@ -186,7 +186,6 @@ class ProfileHandler(BaseHandler, github.GithubMixin):
 			mentor = yield self.db.get_mentor(github_id)
 			if self.current_user and self.current_user['is_mentor']:
 				questions, answers = yield self.db.get_questionnaire(github_id)
-				note = yield self.db.get_note(github_id)
 
 		self.render('profile.html', user=user, avatar_url=self.avatar_url(user['username'], email),
 		            mentor=mentor, mentees=mentees, questions=questions, answers=answers, note=user['note'])
