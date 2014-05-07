@@ -161,6 +161,16 @@ class UnclaimHandler(BaseHandler):
 		yield self.db.remove_mentorship(mentee['github_id'], self.current_user['github_id'])
 		self.redirect('/users/' + username)
 
+class NoteHandler(BaseHandler):
+	@tornado.web.authenticated
+	@tornado.gen.coroutine
+	def post(self, username):
+		if not self.current_user['is_mentor']:
+			raise tornado.web.HTTPError(403)
+		user = yield self.db.get_user_by('username', username)
+		yield self.db.update_note(user['github_id'], self.get_argument('note'))
+		self.redirect('/users/' + username)
+
 class ProfileHandler(BaseHandler, github.GithubMixin):
 	@tornado.gen.coroutine
 	def get(self, username):
@@ -262,6 +272,7 @@ if __name__ == '__main__':
 			(r'/users/(.*)/mail', MailHandler),
 			(r'/users/(.*)/claim', ClaimHandler),
 			(r'/users/(.*)/unclaim', UnclaimHandler),
+			(r'/users/(.*)/note', NoteHandler),
 			(r'/users/(.*)', ProfileHandler),
 			(r'/account', AccountHandler),
 			(r'/account/contact_info', ContactInfoHandler),

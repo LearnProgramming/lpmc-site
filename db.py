@@ -43,6 +43,11 @@ class MomokoDB:
 			yield self.execute(query, info, github_id, info_type)
 
 	@tornado.gen.coroutine
+	def update_note(self, github_id, note):
+		query = 'UPDATE users SET note = %s WHERE github_id = %s;'
+		yield self.execute(query, note, github_id)
+
+	@tornado.gen.coroutine
 	def update_questionnaire(self, github_id, q1, q2, q3, q4, q5):
 		try:
 			query = 'INSERT INTO questionnaire (github_id, q1, q2, q3, q4, q5) VALUES(%s, %s, %s, %s, %s, %s);'

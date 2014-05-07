@@ -7,7 +7,8 @@ CREATE TABLE users (
 	github_id integer PRIMARY KEY,
 	username varchar(32) NOT NULL UNIQUE,
 	access_token varchar NOT NULL UNIQUE,
-	is_mentor integer
+	is_mentor integer,
+	note varchar(1024)
 );
 
 CREATE TABLE contact_info (
