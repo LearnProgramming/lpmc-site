@@ -13,8 +13,8 @@
 		<div class="col-md-5">
 			<h1>{{ user['username'] }}</h1>
 			<p id="profile-link"><a href="https://github.com/{{ user['username'] }}?tab=repositories">GitHub profile</a></p>
-			{% if irc_nickname %}
-				<p id="irc-nickname"><b>IRC:</b> <code>{{ irc_nickname }}</code></p>
+			{% if irc_nick %}
+				<p id="irc-nickname"><b>IRC:</b> <code>{{ irc_nick }}</code></p>
 			{% end %}
 			{% if user['is_mentor'] %}
 				<h2>Mentees</h2>

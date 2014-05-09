@@ -177,9 +177,11 @@ class ProfileHandler(BaseHandler, github.GithubMixin):
 		user = yield self.db.get_user_by('username', username)
 		github_id = user['github_id']
 		contact_info = yield self.db.get_contact_info(github_id)
+		avatar_url = self.avatar_url(user['username'], contact_info[db.ContactInfoType.EMAIL])
+		irc_nick = contact_info.get(db.ContactInfoType.IRC)
+
 		mentor = questions = answers = None
 		mentees = []
-
 		if user['is_mentor']:
 			mentees = yield self.db.get_mentees(user)
 		else:
@@ -187,9 +189,8 @@ class ProfileHandler(BaseHandler, github.GithubMixin):
 			if self.current_user and self.current_user['is_mentor']:
 				questions, answers = yield self.db.get_questionnaire(github_id)
 
-		self.render('profile.html', user=user, avatar_url=self.avatar_url(user['username'], contact_info[db.ContactInfoType.EMAIL]),
-		            mentor=mentor, mentees=mentees, questions=questions, answers=answers, note=user['note'],
-		            irc_nickname=contact_info[db.ContactInfoType.IRC])
+		self.render('profile.html', user=user, avatar_url=avatar_url, mentor=mentor, mentees=mentees,
+				questions=questions, answers=answers, note=user['note'], irc_nick=irc_nick)
 
 class AccountHandler(BaseHandler):
 	@tornado.web.authenticated
