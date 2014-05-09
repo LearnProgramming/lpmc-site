@@ -77,7 +77,10 @@ class MomokoDB:
 		if info_type is None:
 			query = 'SELECT type, info FROM contact_info WHERE github_id = %s;'
 			cursor = yield self.execute(query, github_id)
-			return cursor.fetchall()
+			ret = {}
+			for row in cursor.fetchall():
+				ret[row['type']] = row['info']
+			return ret
 		else:
 			query = 'SELECT info FROM contact_info WHERE github_id = %s AND type = %s;'
 			cursor = yield self.execute(query, github_id, info_type)

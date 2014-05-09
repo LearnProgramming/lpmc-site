@@ -2,6 +2,11 @@ window.addEvent('domready', function() {
 	'use strict';
 	jQuery.noConflict();
 
+	var ContactInfoType = {
+		EMAIL: 0,
+		IRC:   1,
+	};
+
 	document.addEvent('click', function() {
 		var emails = $('emails');
 		emails.set('html', null);
@@ -21,7 +26,7 @@ window.addEvent('domready', function() {
 						var div = new Element('div');
 						div.appendText(item.email);
 						div.addEvent('click', function() {
-							set_email(item.email);
+							setContactInfo(ContactInfoType.EMAIL, item.email);
 						});
 						emails.grab(div, 'top');
 					});
@@ -33,13 +38,18 @@ window.addEvent('domready', function() {
 		}
 	});
 
-	function set_email(email) {
+	$('irc-form').addEvent('submit', function(event) {
+		setContactInfo(ContactInfoType.IRC, $('irc-nickname').value);
+		event.preventDefault();
+	});
+
+	function setContactInfo(info_type, info) {
 		new Request({
 			'url': '/account/contact_info',
 			'onSuccess': function(response) {
 				if (response)
 					location.reload();
 			},
-		}).post({'info_type': 0, 'info': email});
+		}).post({'info_type': info_type, 'info': info});
 	}
 });
